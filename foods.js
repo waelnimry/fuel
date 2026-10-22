@@ -65,5 +65,6 @@ const FOODS = {
   sesame:     {n: 'Sesame seeds', de: 'Sesam', k: 570, p: 18, c: 12, f: 50},
   vinegar:    {n: 'Vinegar', de: 'Essig', k: 20, p: 0, c: 0.5, f: 0},
   stock:      {n: 'Vegetable stock powder', de: 'Gemüsebrühe (Pulver)', k: 200, p: 6, c: 25, f: 8},
+  cabbage:    {n: 'White or pointed cabbage', de: 'Weißkohl / Spitzkohl', k: 25, p: 1.4, c: 4.2, f: 0.2},
   spices:     {n: 'Spices and herbs', de: 'Gewürze', k: 0, p: 0, c: 0, f: 0},
 };
