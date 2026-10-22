@@ -77,21 +77,12 @@ const GYM_RULES = [
 
 const POSTURE = ['Dead bugs 3 × 10', 'Glute bridges 3 × 12', 'Hip-flexor stretch 2 × 45 s per side'];
 
-// Stage 1 food: the current fixed plan. Stage 2 replaces this with the 8-week recipe rotation.
-const MEALS = [
-  {id: 'breakfast', label: 'Breakfast', name: 'Quark bowl: 300 g quark, 40 g oats, 100 g berries', kcal: 395, p: 42},
-  {id: 'lunch', label: 'Lunch', name: 'Chicken 200 g, 1 rice portion, 200 g vegetables', kcal: 460, p: 49},
-  {id: 'snack', label: 'Snack', name: '250 g quark + 1 banana', kcal: 276, p: 31},
-  {id: 'dinner', label: 'Dinner', name: 'Your planned dinner', kcal: 585, p: 46},
-  {id: 'night', label: 'Night', name: '200 g quark (last food, kitchen closes)', kcal: 134, p: 24},
-];
-
 const JUICE = {
   name: 'Pre-gym beetroot juice',
   kcal: 170,
   how: '450 ml beetroot DIRECT juice (Direktsaft, not Nektar), 2–3 hours before training, sipped over 15–20 minutes. Never in the last hour before.',
   limit: 3,   // max per week; the 4th gym day goes without
-  note: 'Gives a few more reps and better blood flow in studies. 170 kcal: on juice days, skip the banana in your snack.',
+  note: 'Gives a few more reps and better blood flow in studies. It is 170 kcal on top of the food plan (counted below). Three a week is about 70 kcal a day on average: if the scale stalls, the juice is the first thing to drop.',
 };
 
 const SUPPLEMENTS = [
@@ -105,12 +96,10 @@ const INBODY = {
   rules: ['Morning, before eating or drinking much.', 'Toilet just before.', 'No training that day before the scan.', 'Light clothes, no metal (watch, belt).'],
 };
 
+// Fixed evening jobs per weekday. The recipe jobs (batch cooking, work boxes, freezer to fridge) are worked out by app.js from recipes.js.
 const KITCHEN = {
-  0: ['Batch cook #1 from about 15:00 (recipes arrive in stage 2).', 'Put the ice packs in the freezer.', 'Move Monday’s lunch from the freezer to the fridge.'],
-  1: ['Move Tuesday’s lunch from the freezer to the fridge.', 'Make tomorrow’s breakfast and put it in the fridge.'],
-  2: ['Pack Wednesday’s WORK box + snack box. They go in the insulated bag with 2 frozen ice packs.', 'Ice packs back in the freezer after work.'],
-  3: ['Ice packs back in the freezer.', 'Move Thursday’s lunch from the freezer to the fridge.'],
-  4: ['Batch cook #2 (recipes arrive in stage 2).', 'Pack Friday’s WORK box + snack box with the ice packs.'],
-  5: ['Ice packs back in the freezer.', 'Write down what is running low for tomorrow’s shop.'],
-  6: ['Weekly shop after the gym (everything is closed on Sunday).', 'Vitamin D capsule with dinner.'],
+  0: ['Ice packs into the freezer (for Wednesday).'],
+  3: ['Ice packs back in the freezer.'],
+  5: ['Ice packs back in the freezer.', 'Check what is running low for tomorrow’s shop.'],
+  6: ['Weekly shop after the gym (shops are closed on Sunday).'],
 };

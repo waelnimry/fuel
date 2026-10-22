@@ -1,4 +1,4 @@
-/* Fuel — stage 1: Today, gym log, Body (weigh-ins, calorie advice, InBody), backup.
+/* Fuel — Today, Eat (recipe rotation), gym log, Body (weigh-ins, calorie advice, InBody), backup.
    Everything is stored only on this phone (localStorage). */
 (() => {
 'use strict';
@@ -55,6 +55,113 @@ function lastLog(exName, before) {
   return dates.length ? Object.assign({date: dates[dates.length - 1]}, L[dates[dates.length - 1]]) : null;
 }
 
+// ---------- food plan (foods.js + recipes.js) ----------
+// Where each meal comes from. Sunday batch (cooked the Sunday BEFORE the week) and Thursday batch.
+const ROLE = {
+  breakfast: {label: 'Breakfast', makes: 1}, snack: {label: 'Snack', makes: 1},
+  sunLunch: {label: 'Lunch', makes: 3, when: 'Mon, Tue and Thu lunch'},
+  sunDinner: {label: 'Dinner', makes: 4, when: 'Sunday, Mon, Tue and Wed dinner'},
+  thuDinner: {label: 'Dinner', makes: 3, when: 'Thu, Fri and Sat dinner'},
+  thuLunch: {label: 'Lunch', makes: 2, when: 'Sat and Sun lunch'},
+  wedBox: {label: 'Work box', makes: 1, when: 'Wednesday at work'},
+  friBox: {label: 'Work box', makes: 1, when: 'Friday at work'},
+};
+const LUNCH = {1: 'sunLunch', 2: 'sunLunch', 3: 'wedBox', 4: 'sunLunch', 5: 'friBox', 6: 'thuLunch', 0: 'thuLunch'};
+const DINNER = {1: 'sunDinner', 2: 'sunDinner', 3: 'sunDinner', 4: 'thuDinner', 5: 'thuDinner', 6: 'thuDinner', 0: 'sunDinner'};
+const COOK_DAY = {sunLunch: 0, sunDinner: 0, thuDinner: 4, thuLunch: 4};
+const EAT_DAYS = {sunLunch: [1, 2, 4], sunDinner: [0, 1, 2, 3], thuDinner: [4, 5, 6], thuLunch: [6, 0]};
+const daysAfterCook = (role, wd) => (wd - COOK_DAY[role] + 7) % 7;
+const fridgeDays = id => RECIPES[id].fridge ?? 2;
+const nW = WEEKS.length, rot = i => ((i % nW) + nW) % nW;
+const sumIngs = ings => ings.reduce((m, i) => { const F = FOODS[i.f]; m.kcal += F.k * i.g / 100; m.p += F.p * i.g / 100; m.c += F.c * i.g / 100; m.f += F.f * i.g / 100; return m; }, {kcal: 0, p: 0, c: 0, f: 0});
+const MAC = {};
+const macros = id => MAC[id] || (MAC[id] = sumIngs(RECIPES[id].ings));
+function amt(f, g) {
+  const F = FOODS[f];
+  if (F.piece) { const n = g / F.piece; if (n >= 0.95 && Math.abs(n - Math.round(n)) < 0.05) { const k = Math.round(n); return `${k} ${F.unit}${k > 1 ? 's' : ''}`; } }
+  return `${Math.round(g)} g`;
+}
+// {food} → batch amount in brackets, {=food*2} → plain number rounded to 5 (water in ml)
+function fillStep(t, r) {
+  const g = Object.fromEntries(r.ings.map(i => [i.f, i.g * r.makes]));
+  return t.replace(/\{=(\w+)\*([\d.]+)\}/g, (m, f, k) => g[f] == null ? m : String(Math.round(g[f] * Number(k) / 5) * 5))
+    .replace(/\{(\w+)\}/g, (m, f) => g[f] == null ? m : `(${amt(f, g[f])})`);
+}
+// Monday of food week 1: the week Start was pressed in (a Sunday start belongs to the week after).
+// Before Start: the coming Monday, because the plan is "shop Saturday, cook Sunday, start Monday".
+function planBase() {
+  if (S.start) return weekday(S.start) === 0 ? addDays(S.start, 1) : mondayOf(S.start);
+  const t = todayISO(); return weekday(t) === 1 ? t : addDays(mondayOf(t), 7);
+}
+const weekIdx = d => Math.floor(daysBetween(planBase(), mondayOf(d)) / 7);
+function roleOf(id) {
+  if (id === 'nightquark') return {role: 'night'};
+  for (let w = 0; w < nW; w++) for (const k in WEEKS[w]) if (WEEKS[w][k] === id) return {week: w, role: k};
+  return null;
+}
+// The 5 meals of weekday wd in food week wk (wk < 0 only on a start-Sunday: the plan begins with tonight's dinner).
+function planFor(wk, wd) {
+  const W = WEEKS[rot(Math.max(wk, 0))], dinW = wd === 0 ? WEEKS[rot(wk + 1)] : W;
+  const out = [{slot: 'breakfast', label: 'Breakfast', id: W.breakfast}];
+  if (wk >= 0) out.push({slot: 'lunch', label: ROLE[LUNCH[wd]].label, id: W[LUNCH[wd]], role: LUNCH[wd]});
+  out.push({slot: 'snack', label: 'Snack', id: W.snack}, {slot: 'dinner', label: 'Dinner', id: dinW[DINNER[wd]], role: DINNER[wd], fresh: wd === 0}, {slot: 'night', label: 'Night', id: 'nightquark'});
+  return out.map(m => Object.assign(m, {name: RECIPES[m.id].name}, macros(m.id)));
+}
+const EXTRAS = sumIngs(BREAK_EXTRAS);
+function dayMeals(d) {
+  const out = planFor(weekIdx(d), weekday(d));
+  if (inBreak(d)) out.push(Object.assign({slot: 'extras', label: 'Maintenance extras', name: BREAK_EXTRAS.map(i => `${i.note || amt(i.f, i.g)} ${FOODS[i.f].n.toLowerCase()}`).join(' · ')}, EXTRAS));
+  return out;
+}
+const total = ms => ms.reduce((a, m) => ({kcal: a.kcal + m.kcal, p: a.p + m.p, c: a.c + m.c, f: a.f + m.f}), {kcal: 0, p: 0, c: 0, f: 0});
+const link = id => `<a class="lnk" href="#" data-act="recipe" data-id="${esc(id)}">${esc(RECIPES[id].name)}</a>`;
+function freezerLine(W, roles) {
+  const parts = roles.map(role => { const id = W[role], days = EAT_DAYS[role].filter(wd => daysAfterCook(role, wd) > fridgeDays(id)); return days.length ? `${esc(RECIPES[id].name)} for ${days.map(x => DAYS[x]).join(' and ')}` : ''; }).filter(Boolean);
+  return parts.length ? `Straight into the freezer once cool: ${parts.join('; ')}. Everything else in the fridge.` : 'Everything goes in the fridge once cool.';
+}
+// Evening kitchen jobs for weekday wd of food week wk.
+function kitchen(wk, wd) {
+  const out = [], W = WEEKS[rot(Math.max(wk, 0))];
+  const twd = (wd + 1) % 7, twk = wd === 0 ? wk + 1 : wk, TW = WEEKS[rot(Math.max(twk, 0))];
+  if (wd === 0) {
+    const N = WEEKS[rot(wk + 1)];
+    out.push(`<b>Batch cook #1</b>, from about 15:00: ${link(N.sunDinner)} ×4 (tonight’s dinner, then Mon–Wed) and ${link(N.sunLunch)} ×3 (Mon, Tue and Thu lunch).`, freezerLine(N, ['sunDinner', 'sunLunch']));
+    [N.breakfast, N.snack].forEach(id => { if (RECIPES[id].sundayPrep) out.push(esc(RECIPES[id].sundayPrep)); });
+  }
+  if (wd === 2 && wk >= 0) out.push(`Make Wednesday’s work box: ${link(W.wedBox)}. Fridge overnight.`);
+  if (wd === 4 && wk >= 0) out.push(`<b>Batch cook #2</b>, after the gym: ${link(W.thuDinner)} ×3 (tonight’s dinner, then Fri and Sat) and ${link(W.thuLunch)} ×2 (Sat and Sun lunch).`, freezerLine(W, ['thuDinner', 'thuLunch']), `Make Friday’s work box: ${link(W.friBox)}. Fridge overnight.`);
+  // frozen raw fish/meat for tomorrow's batch
+  const nextBatch = twd === 0 ? [WEEKS[rot(twk + 1)], ['sunDinner', 'sunLunch']] : twd === 4 && twk >= 0 ? [TW, ['thuDinner', 'thuLunch']] : null;
+  if (nextBatch) nextBatch[1].forEach(role => { const id = nextBatch[0][role], r = RECIPES[id]; (r.thaw || []).forEach(f => { const i = r.ings.find(x => x.f === f); out.push(`Move the frozen ${esc(FOODS[f].n.toLowerCase().replace(/ \(.*\)$/, ''))} (${amt(f, i.g * r.makes)}) to the fridge: it thaws overnight for tomorrow’s ${link(id)}.`); }); });
+  // cooked portions that are in the freezer
+  if (twk >= 0) for (const [slot, role] of [['lunch', LUNCH[twd]], ['dinner', DINNER[twd]]]) {
+    if (!COOK_DAY.hasOwnProperty(role) || (twd === 0 && slot === 'dinner')) continue;
+    const id = TW[role];
+    if (daysAfterCook(role, twd) > fridgeDays(id)) out.push(`Move tomorrow’s ${slot} (${link(id)}) from the freezer to the fridge.`);
+  }
+  if (twk >= 0 && RECIPES[TW.breakfast].prep === 'night') out.push(`Make tomorrow’s breakfast: ${link(TW.breakfast)} (5 min, fridge overnight).`);
+  (KITCHEN[wd] || []).forEach(k => out.push(esc(k)));
+  return out;
+}
+function kitchenOn(d) {
+  const wd = weekday(d);
+  if (!S.start && wd !== 6 && wd !== 0) return ['Best start: shop on Saturday, batch cook on Sunday, press Start on Monday morning. Week 1 is in the Eat tab.'];
+  return kitchen(weekIdx(d), wd);
+}
+function storageText(id) {
+  const r = RECIPES[id], ro = roleOf(id);
+  if (ro && (ro.role === 'wedBox' || ro.role === 'friBox')) return 'Made the night before, fridge overnight. In the morning it goes in the insulated bag with 2 frozen ice packs. Eat it on your break; anything you bring home goes in the bin.';
+  if (ro && COOK_DAY.hasOwnProperty(ro.role)) {
+    const lim = fridgeDays(id), days = EAT_DAYS[ro.role];
+    const cook = DAYS[COOK_DAY[ro.role]], fresh = days.filter(wd => daysAfterCook(ro.role, wd) === 0);
+    const fr = days.filter(wd => { const a = daysAfterCook(ro.role, wd); return a > 0 && a <= lim; }), fz = days.filter(wd => daysAfterCook(ro.role, wd) > lim);
+    return `Cooked on ${cook}. ${fresh.length ? 'One portion tonight. ' : ''}${fr.length ? `Fridge: ${fr.map(x => DAYS[x]).join(', ')}. ` : ''}${fz.length ? `Freezer: ${fz.map(x => DAYS[x]).join(', ')} (moved to the fridge the night before; the app reminds you). ` : ''}${lim === 1 ? 'Cooked rice is only safe 1 day in the fridge, so later portions are frozen.' : 'Cooked food keeps 2 days in the fridge; later portions are frozen.'}`;
+  }
+  if (r.prep === 'night') return 'Made the night before in a closed jar, fridge overnight.';
+  return '';
+}
+const promptFor = r => `Realistic food photo for a recipe app: ${r.look}. Home-cooked, a natural portion for one person, on a dark wooden table, warm soft side light, shot from about 45 degrees, shallow depth of field, landscape 4:3. No text, no labels, no logos, no hands, no people.`;
+
 // ---------- calorie advice (the 2-week rule from the plan) ----------
 function advice(d) {
   if (!S.start) return {state: 'wait', text: 'Press Start on the Today tab first. From then on, weigh in most mornings.'};
@@ -106,16 +213,18 @@ function dayCard(d) {
 }
 
 function foodCard(d) {
-  const eaten = S.eaten[d] || {}, tgt = targetKcal(d);
+  if (!S.start) return `<div class="card"><div class="label">Food</div><h2>Your food plan starts on day 1</h2><p class="small">Week 1 is ready in the Eat tab, every recipe with exact grams. Best order: shop on Saturday, batch cook on Sunday, press Start on Monday morning.</p><button class="btn sm" data-act="goEat">Open week 1</button></div>`;
+  const meals = dayMeals(d), eaten = S.eaten[d] || {}, tgt = targetKcal(d), plan = total(meals);
   let kcal = 0, p = 0;
-  MEALS.forEach(m => { if (eaten[m.id]) { kcal += m.kcal; p += m.p; } });
+  meals.forEach(m => { if (eaten[m.slot]) { kcal += m.kcal; p += m.p; } });
   if (S.juice[d]) kcal += JUICE.kcal;
   const pct = Math.min(100, kcal / tgt * 100);
   return `<div class="card"><div class="row"><h2 class="grow" style="margin:0">Today’s food</h2><span class="counter">${r0(kcal)} / ${tgt} kcal · ${r0(p)} / ${PLAN.protein} g P</span></div>
     <div class="bar"><i style="width:${pct}%"></i></div>
-    ${inBreak(d) ? `<p class="note small">Maintenance week: same meals with bigger rice and potato portions, about ${PLAN.dietBreakKcal} kcal.</p>` : ''}
-    ${MEALS.map(m => `<div class="tick ${eaten[m.id] ? 'on' : ''}" role="checkbox" tabindex="0" aria-checked="${!!eaten[m.id]}" data-act="eat" data-id="${m.id}"><span class="box">${eaten[m.id] ? '✓' : ''}</span><span class="grow"><span class="label" style="margin:0">${esc(m.label)}</span><div class="t">${esc(m.name)}</div></span><span class="kc">${m.kcal} kcal · ${m.p} g</span></div>`).join('')}
-    <p class="small muted" style="margin-top:8px">Recipes with exact grams arrive in stage 2.</p></div>`;
+    ${inBreak(d) ? `<p class="note small">Maintenance week: the normal meals plus the extras below, about ${PLAN.dietBreakKcal} kcal.</p>` : ''}
+    ${weekIdx(d) < 0 ? '<p class="note small">Lunch today is your own: the plan starts with tonight’s dinner from the Sunday batch.</p>' : ''}
+    ${meals.map(m => { const on = !!eaten[m.slot]; return `<div class="meal"><div class="tick ${on ? 'on' : ''}" role="checkbox" tabindex="0" aria-checked="${on}" data-act="eat" data-id="${m.slot}"><span class="box">${on ? '✓' : ''}</span><span class="grow"><span class="label" style="margin:0">${esc(m.label)}</span><div class="t">${esc(m.name)}</div><span class="kc">${r0(m.kcal)} kcal · ${r0(m.p)} g P</span></span></div>${RECIPES[m.id] ? `<button class="btn ghost sm" data-act="recipe" data-id="${m.id}" aria-label="Recipe: ${esc(m.name)}">Recipe</button>` : ''}</div>`; }).join('')}
+    <p class="small muted" style="margin-top:8px">Planned today: ${r0(plan.kcal)} kcal · ${r0(plan.p)} g protein · ${r0(plan.c)} g carbs · ${r0(plan.f)} g fat.</p></div>`;
 }
 
 function juiceCard(d) {
@@ -143,19 +252,74 @@ function weighCard(d) {
 function vToday() {
   const d = todayISO();
   let h = header() + `<h1>${longDate(d)}</h1>`;
-  if (!S.start) h += `<div class="card hi"><h2>Press Start on the day you begin</h2><p class="small">Nothing is counting yet. When you press Start, that day is <b>day 1</b>: the week count and the calorie advice count from it.</p><button class="btn" data-act="start">Press Start — this is day 1</button></div>`;
-  if (inBreak(d)) h += `<div class="card hi"><div class="label">Maintenance week</div><p>Eat about ${PLAN.dietBreakKcal} kcal this week: same food, bigger carb portions. Training stays the same. It is planned, not a cheat.</p></div>`;
+  if (!S.start) h += `<div class="card hi"><h2>Press Start on the day you begin</h2><p class="small">Nothing is counting yet. When you press Start, that day is <b>day 1</b>: the week count, the food plan and the calorie advice count from it.</p><p class="small muted">Best: shop on Saturday, batch cook week 1 on Sunday, press Start on Monday morning.</p><button class="btn" data-act="start">Press Start — this is day 1</button></div>`;
+  if (inBreak(d)) h += `<div class="card hi"><div class="label">Maintenance week</div><p>Eat about ${PLAN.dietBreakKcal} kcal this week: the normal meals plus the extras in the food list. Training stays the same. It is planned, not a cheat.</p></div>`;
   h += dayCard(d) + juiceCard(d) + weighCard(d) + foodCard(d) + suppCard(d);
-  h += `<div class="card"><h2>Kitchen</h2><ul class="plain">${(KITCHEN[weekday(d)] || []).map(k => `<li>${esc(k)}</li>`).join('')}</ul></div>`;
+  const jobs = kitchenOn(d);
+  if (jobs.length) h += `<div class="card"><div class="label">${weekday(d) === 0 ? 'Kitchen today' : 'Tonight in the kitchen'}</div><ul class="tasks">${jobs.map(k => `<li>${k}</li>`).join('')}</ul></div>`;
   return h;
 }
 
+const ui = {week: null, day: null, recipe: null};
+const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
+const KIND = {breakfast: 'Breakfast', snack: 'Snack', night: 'Night', sunLunch: 'Lunch', thuLunch: 'Lunch', sunDinner: 'Dinner', thuDinner: 'Dinner', wedBox: 'Work box', friBox: 'Work box'};
+const thumb = id => PICS.includes(id) ? `<img src="pics/${esc(id)}.jpg" alt="" loading="lazy">` : '📷';
+function recipeRow(id) {
+  const r = RECIPES[id], m = macros(id), ro = roleOf(id);
+  return `<button class="rc" data-act="recipe" data-id="${esc(id)}"><span class="thumb">${thumb(id)}</span><span class="grow"><span class="label" style="margin:0">${esc(KIND[ro && ro.role] || '')} · ${r.minutes} min · makes ${r.makes}</span><div class="t">${esc(r.name)}</div><span class="small muted">${esc(r.tagline)}</span><div class="kc">${r0(m.kcal)} kcal · ${r0(m.p)} g P per portion</div></span></button>`;
+}
 function vEat() {
+  const today = todayISO(), nowW = S.start ? rot(Math.max(weekIdx(today), 0)) : 0;
+  const wk = ui.week ?? nowW, wd = ui.day ?? weekday(today), W = WEEKS[wk];
+  const meals = planFor(wk, wd), t = total(meals), jobs = kitchen(wk, wd);
+  let weeks = '';
+  for (let i = 0; i < PLAN_WEEKS; i++) weeks += i < nW ? `<button class="chip ${i === wk ? 'on' : ''}" data-act="eatWeek" data-w="${i}">Week ${i + 1}${S.start && i === nowW ? ' · now' : ''}</button>` : `<button class="chip" disabled>Week ${i + 1}</button>`;
+  const days = WEEK_ORDER.map(x => `<button class="chip ${x === wd ? 'on' : ''}" data-act="eatDay" data-d="${x}">${DAYS[x].slice(0, 3)}</button>`).join('');
   return header() + `<h1>Eat</h1>
-  <div class="card hi"><div class="label">Coming in stage 2</div><h2>Your 8-week recipe rotation</h2><p class="small">International, German/European and Asian dishes, cooked in two batches a week (Sunday afternoon and Thursday) with your air fryer and hob. Exact grams, steps, fridge/freezer rules, cold-friendly work boxes, rotating breakfasts and snacks.</p></div>
+  <div class="chips" role="group" aria-label="Week">${weeks}</div>
+  ${nW < PLAN_WEEKS ? `<p class="small muted" style="margin:-4px 0 12px">Weeks ${nW + 1}–${PLAN_WEEKS} are being written. Until then the plan repeats weeks 1–${nW}.</p>` : ''}
+  <div class="chips" role="group" aria-label="Day">${days}</div>
+  <div class="card"><h2>${DAYS[wd]} · week ${wk + 1}</h2><p class="kc" style="margin:0 0 4px">${r0(t.kcal)} kcal · P ${r0(t.p)} · C ${r0(t.c)} · F ${r0(t.f)}</p>
+    ${meals.map(m => `<div class="meal"><span class="grow"><span class="label" style="margin:0">${esc(m.label)}</span><div>${link(m.id)}</div>${m.fresh ? '<span class="small muted">Cooked today: the first portion of the Sunday batch.</span>' : ''}</span><span class="kc">${r0(m.kcal)} kcal · ${r0(m.p)} g</span></div>`).join('')}
+    ${jobs.length ? `<div class="note small" style="margin-top:10px"><b>${wd === 0 ? 'Today' : 'Tonight'}:</b><ul class="tasks" style="margin-top:6px">${jobs.map(k => `<li>${k}</li>`).join('')}</ul></div>` : ''}</div>
+  <div class="card"><h2>Cooking this week</h2>
+    <div class="label" style="margin-top:8px">Sunday before the week · from about 15:00</div><p class="small">${link(W.sunDinner)} ×4 · ${ROLE.sunDinner.when}<br>${link(W.sunLunch)} ×3 · ${ROLE.sunLunch.when}</p>
+    <div class="label">Tuesday night · 25 min</div><p class="small">${link(W.wedBox)} · ${ROLE.wedBox.when}</p>
+    <div class="label">Thursday after the gym</div><p class="small">${link(W.thuDinner)} ×3 · ${ROLE.thuDinner.when}<br>${link(W.thuLunch)} ×2 · ${ROLE.thuLunch.when}<br>${link(W.friBox)} · ${ROLE.friBox.when}</p>
+    ${wk === 0 ? '<p class="small muted">Week 1: the Sunday batch is cooked the day before you press Start.</p>' : ''}</div>
+  <div class="card"><h2>Week ${wk + 1} recipes</h2>${['breakfast', 'snack', 'sunDinner', 'sunLunch', 'wedBox', 'thuDinner', 'thuLunch', 'friBox'].map(k => recipeRow(W[k])).join('')}${recipeRow('nightquark')}</div>
+  <div class="card"><div class="label">Food safety</div><ul class="plain small">
+    <li>Cool cooked food fast: lids off, no more than 1 hour on the counter, then fridge or freezer.</li>
+    <li>Cooked rice: 1 day in the fridge, otherwise the freezer. Other cooked food: 2 days.</li>
+    <li>Thaw in the fridge overnight, never on the counter.</li>
+    <li>Reheat once, until it is steaming hot all the way through.</li>
+    <li>Work box: insulated bag with 2 frozen ice packs. Anything you bring home goes in the bin.</li>
+    <li>Chicken, pork and mince are done when a cut-open piece has no pink and the juice runs clear.</li></ul></div>
   <div class="card"><h2>The targets</h2><p><b>${PLAN.kcal} kcal · ${PLAN.protein} g protein a day</b>: about ${r0((1 - PLAN.kcal / PLAN.maintenance) * 100)} % below your estimated maintenance of ~${PLAN.maintenance} kcal. Expect about 0.75 kg a week.</p>
   <p class="small muted">Maintenance week: ${PLAN.dietBreaks.map(([a, b]) => shortDate(a) + ' – ' + shortDate(b)).join(', ')} (~${PLAN.dietBreakKcal} kcal). Goal: ${esc(PLAN.goal)}.</p></div>
-  <div class="card"><div class="label">Rules that always apply</div><ul class="plain small"><li>Protein first at every meal.</li><li>No juice, soda or sugary drinks (the pre-gym beetroot juice is the planned exception).</li><li>Kitchen closes after the night quark.</li><li>Still hungry? Vegetables and water, never more rice.</li></ul></div>`;
+  <div class="card"><div class="label">Rules that always apply</div><ul class="plain small"><li>Protein first at every meal.</li><li>No juice, soda or sugary drinks (the pre-gym beetroot juice is the planned exception).</li><li>Kitchen closes after the night quark.</li><li>Still hungry? Vegetables and water, never more rice.</li><li>Hob: high = 8 of 9, medium = 5–6, low = 2–3.</li></ul></div>`;
+}
+
+function vRecipe(id) {
+  const r = RECIPES[id], m = macros(id), ro = roleOf(id), batch = r.makes > 1, st = storageText(id);
+  const pic = PICS.includes(id) ? `<div class="hero"><img src="pics/${esc(id)}.jpg" alt="${esc(r.name)}"></div>` : `<div class="hero empty"><span style="font-size:26px">📷</span><span class="small">No picture yet: make one with the prompt at the bottom.</span></div>`;
+  const showNote = i => i.note && !FOODS[i.f].n.toLowerCase().includes(i.note.toLowerCase());
+  const rows = r.ings.map(i => `<tr><td>${esc(FOODS[i.f].n)}${showNote(i) ? ` <span class="muted">(${esc(i.note)})</span>` : ''}<span class="de">${esc(FOODS[i.f].de)}</span></td><td class="num">${amt(i.f, i.g)}</td>${batch ? `<td class="num">${amt(i.f, i.g * r.makes)}</td>` : ''}</tr>`).join('');
+  return `<div class="top"><button class="btn ghost sm" data-act="closeRecipe">← Back</button><span class="pill">${esc(r.cuisine)}</span></div>
+  <div style="height:12px"></div>${pic}
+  <div class="eyebrow">${esc(KIND[ro && ro.role] || '')} · ${r.minutes} min · makes ${r.makes}</div>
+  <h1 style="margin-bottom:6px">${esc(r.name)}</h1><p class="muted">${esc(r.tagline)}</p>
+  <div class="grid4" style="margin:12px 0 14px"><div class="stat"><div class="big">${r0(m.kcal)}</div><div class="label" style="margin:0">kcal</div></div><div class="stat"><div class="big">${r0(m.p)}</div><div class="label" style="margin:0">protein g</div></div><div class="stat"><div class="big">${r0(m.c)}</div><div class="label" style="margin:0">carbs g</div></div><div class="stat"><div class="big">${r0(m.f)}</div><div class="label" style="margin:0">fat g</div></div></div>
+  <p class="small muted" style="margin-top:-6px">Per portion.${ro && ROLE[ro.role] && ROLE[ro.role].when ? ` Eaten: ${esc(ROLE[ro.role].when)}.` : ''}</p>
+  <div class="card"><h2>Ingredients</h2><table><tr><th>Food</th><th class="num">Each</th>${batch ? `<th class="num">All ${r.makes}</th>` : ''}</tr>${rows}</table>
+    ${r.spices.length ? `<p class="small" style="margin-top:10px"><b>Spices:</b> ${r.spices.map(esc).join(' · ')}</p>` : ''}
+    <p class="small muted">Weigh with your kitchen scale: raw meat and fish, dry rice and pasta, drained beans and tuna.</p></div>
+  <div class="card"><h2>Steps</h2><ol class="steps">${r.steps.map(s => `<li>${esc(fillStep(s, r))}</li>`).join('')}</ol></div>
+  ${st || r.reheat ? `<div class="card"><h2>Fridge, freezer, reheating</h2>${st ? `<p class="small">${esc(st)}</p>` : ''}${r.reheat ? `<p class="small"><b>Reheat:</b> ${esc(r.reheat)}</p>` : ''}</div>` : ''}
+  ${r.sundayPrep ? `<div class="card"><div class="label">On Sunday</div><p class="small">${esc(r.sundayPrep)}</p></div>` : ''}
+  ${r.swap ? `<div class="card"><div class="label">Swap</div><p class="small">${esc(r.swap)}</p></div>` : ''}
+  <div class="card"><div class="label">Picture prompt for the Gemini app</div><p class="note small" id="prompt">${esc(promptFor(r))}</p>
+    <button class="btn sm" data-act="copyPrompt">Copy prompt</button><p class="small muted" style="margin-top:8px">Paste it into Gemini, save the picture to Drive (folder Claude) and tell me: I add it to this page.</p></div>`;
 }
 
 function vShop() {
@@ -216,7 +380,8 @@ function vBody() {
 const VIEWS = {today: vToday, eat: vEat, shop: vShop, body: vBody};
 function render() {
   if (!VIEWS[S.tab]) S.tab = 'today';
-  $('#app').innerHTML = VIEWS[S.tab]();
+  if (ui.recipe && !RECIPES[ui.recipe]) ui.recipe = null;
+  $('#app').innerHTML = ui.recipe ? vRecipe(ui.recipe) : VIEWS[S.tab]();
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
 }
 
@@ -243,6 +408,22 @@ const H = {
     if (!s.date || s.kg == null) return toast('Enter at least the date and the weight');
     S.scans = S.scans.filter(x => x.date !== s.date).concat([s]); save(); toast('Scan saved'); render();
   },
+  recipe(el) {
+    // one history entry for the recipe page, so the phone's Back always returns to where you came from
+    ui.recipe = el.dataset.id;
+    try { if (history.state && history.state.fuelRecipe) history.replaceState({fuelRecipe: ui.recipe}, ''); else history.pushState({fuelRecipe: ui.recipe}, ''); } catch (e) { /* history blocked: the Back button still works */ }
+    render(); window.scrollTo(0, 0);
+  },
+  closeRecipe() { if (history.state && history.state.fuelRecipe) history.back(); else { ui.recipe = null; render(); } },
+  eatWeek(el) { ui.week = Number(el.dataset.w); render(); },
+  eatDay(el) { ui.day = Number(el.dataset.d); render(); },
+  goEat() { S.tab = 'eat'; ui.week = 0; save(); render(); window.scrollTo(0, 0); },
+  copyPrompt() {
+    const el = $('#prompt'), text = el.textContent;
+    const fallback = () => { const range = document.createRange(); range.selectNodeContents(el); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range); toast('Selected: long-press it and choose Copy'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast('Prompt copied. Paste it into the Gemini app.'), fallback);
+    else fallback();
+  },
   export() {
     const blob = new Blob([JSON.stringify(Object.assign({}, S, {exported: new Date().toISOString()}), null, 1)], {type: 'application/json'});
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `fuel-backup-${todayISO()}.json`; document.body.appendChild(a); a.click(); a.remove();
@@ -251,8 +432,9 @@ const H = {
 };
 document.addEventListener('click', e => {
   const tab = e.target.closest('#tabs button');
-  if (tab) { S.tab = tab.dataset.tab; save(); render(); window.scrollTo(0, 0); return; }
+  if (tab) { S.tab = tab.dataset.tab; if (ui.recipe) { ui.recipe = null; try { history.replaceState(null, ''); } catch (err) { /* ignore */ } } save(); render(); window.scrollTo(0, 0); return; }
   const el = e.target.closest('[data-act]');
+  if (el && el.tagName === 'A') e.preventDefault();
   if (el && H[el.dataset.act]) H[el.dataset.act](el);
 });
 document.addEventListener('keydown', e => {
@@ -282,7 +464,10 @@ document.addEventListener('change', e => {
   }
 });
 
+// phone Back button closes an open recipe
+window.addEventListener('popstate', () => { ui.recipe = (history.state && history.state.fuelRecipe) || null; render(); });
+
 render();
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
-window.__fuel = {get S() { return S; }, set S(v) { S = v; }, render, advice, H, save, todayISO, mondayOf, addDays};
+window.__fuel = {get S() { return S; }, set S(v) { S = v; }, render, advice, H, save, todayISO, mondayOf, addDays, ui, planFor, dayMeals, kitchen, kitchenOn, macros, weekIdx, fillStep, storageText, ROLE};
 })();
