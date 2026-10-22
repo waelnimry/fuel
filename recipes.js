@@ -32,7 +32,7 @@ const RECIPES = {
     ings: [{f: 'thigh', g: 170}, {f: 'rice', g: 35, note: 'dry'}, {f: 'broccoli', g: 150, note: 'frozen'}, {f: 'carrot', g: 60}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'ginger', g: 5}, {f: 'garlic', g: 4, note: '1 clove'}, {f: 'cornflour', g: 4}, {f: 'oil', g: 4}, {f: 'sesame', g: 3}],
     spices: ['Pepper'],
     steps: [
-      'Rice: rinse {rice} in a sieve until the water runs clear. Pot with {=rice*2} ml water and a pinch of salt, high heat until it boils, then low, lid on, 12 min. Off the heat, lid on, 5 min more.',
+      'Rice: rinse {rice} in a sieve until the water runs clear. Pot with {=rice*2} ml water and a pinch of salt, high heat until it boils, then low, lid on, 12 min (parboiled rice: the time on the pack, about 15–20 min). Off the heat, lid on, 5 min more.',
       'Sauce in a cup: soy sauce {soy}, honey {honey}, grated ginger {ginger}, crushed garlic {garlic}, cornflour {cornflour} and 100 ml water. Stir.',
       'Cut the chicken thighs {thigh} into 2–3 cm pieces. Large pan, high heat, oil {oil}. Chicken in one layer (2 rounds if it is crowded), 6–7 min, turning, until golden. Cut the biggest piece open: white all through, no pink.',
       'Carrots {carrot} in thin slices. Add them and the frozen broccoli {broccoli} to the pan with 100 ml water, lid on, medium heat, 5 min.',
@@ -167,7 +167,7 @@ const RECIPES = {
     ings: [{f: 'chicken', g: 160}, {f: 'rice', g: 40, note: 'dry'}, {f: 'coconutlt', g: 65}, {f: 'choptom', g: 133}, {f: 'onion', g: 60}, {f: 'spinach', g: 100, note: 'frozen'}, {f: 'peas', g: 50, note: 'frozen'}, {f: 'garlic', g: 4}, {f: 'ginger', g: 5}, {f: 'oil', g: 3}],
     spices: ['2 tbsp mild curry powder', 'Salt', 'Lemon juice (optional)'],
     steps: [
-      'Rice: rinse {rice}. Pot with {=rice*2} ml water and a pinch of salt, boil, then low, lid on, 12 min. Off the heat, lid on, 5 min.',
+      'Rice: rinse {rice}. Pot with {=rice*2} ml water and a pinch of salt, boil, then low, lid on, 12 min (parboiled rice: the time on the pack). Off the heat, lid on, 5 min.',
       'Chicken {chicken} in bite-size pieces. Onion {onion} diced; garlic {garlic} and ginger {ginger} grated.',
       'Big pan or pot, medium-high heat, oil {oil}: onion 4 min, then garlic, ginger and curry powder, 1 min.',
       'Chicken in, 4 min, stirring. Chopped tomatoes {choptom} (one can), coconut milk {coconutlt} (half a can: freeze the rest in a small box) and 100 ml water. Simmer 12 min, lid half on. Cut a piece open: white all through.',
@@ -198,7 +198,7 @@ const RECIPES = {
     ings: [{f: 'rice', g: 45, note: 'dry'}, {f: 'chicken', g: 160}, {f: 'pepper', g: 80}, {f: 'tomato', g: 80}, {f: 'lettuce', g: 40}, {f: 'quark', g: 50, note: 'dressing'}, {f: 'lemon', g: 10}, {f: 'oil', g: 9}],
     spices: ['Ground cumin', 'Smoked paprika', 'Chili powder', 'Garlic powder', 'Salt'],
     steps: [
-      'Rice: rinse {rice}. Small pot with {=rice*2} ml water, boil, then low, lid on, 12 min, then 5 min off the heat. Spread it on a plate so it cools fast (10 min), then into the box.',
+      'Rice: rinse {rice}. Small pot with {=rice*2} ml water, boil, then low, lid on, 12 min (parboiled: the time on the pack), then 5 min off the heat. Spread it on a plate so it cools fast (10 min), then into the box.',
       'Chicken {chicken}: rub with 1 tsp of the oil, cumin, smoked paprika, chili, garlic powder and salt. Air fryer 190 °C, 14–16 min. Cut it open: white all through. Cool 10 min, slice.',
       'Pepper {pepper} and tomato {tomato} diced, lettuce {lettuce} shredded.',
       'Dressing in a small pot: quark {quark}, lemon or lime juice {lemon}, the rest of the oil {oil}, a pinch of salt and cumin.',
@@ -236,4 +236,4 @@ const PLAN_WEEKS = 8; // weeks 3–8 are written in stage 2b
 const BREAK_EXTRAS = [{f: 'toast', g: 56, note: '2 slices'}, {f: 'pbutter', g: 20}, {f: 'banana', g: 120, note: '1 banana'}, {f: 'oats', g: 50, note: 'extra in breakfast'}];
 
 // Pictures he has made in the Gemini app and that are saved in pics/<id>.jpg.
-const PICS = [];
+const PICS = ['appleoats', 'beefnoodles', 'berrybowl', 'burritobowl', 'chickencurry', 'chickenpastasalad', 'chili', 'cocoaquark', 'goulash', 'herbdip', 'kartoffelsalat', 'nightquark', 'pollock', 'salmonpasta', 'teriyaki', 'tunapotato', 'turkeywedges'];

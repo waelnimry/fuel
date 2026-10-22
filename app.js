@@ -21,7 +21,7 @@ const longDate = s => { const d = parse(s); return `${DAYS[d.getDay()]} ${d.getD
 const shortDate = s => { const d = parse(s); return `${DAYS[d.getDay()].slice(0, 3)} ${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)}`; };
 
 // ---------- state ----------
-const blank = () => ({v: 1, start: null, kcal: PLAN.kcal, kcalChanges: [], weights: {}, eaten: {}, juice: {}, supp: {}, logs: {}, done: {}, scans: [], tab: 'today'});
+const blank = () => ({v: 1, start: null, kcal: PLAN.kcal, kcalChanges: [], weights: {}, eaten: {}, juice: {}, supp: {}, logs: {}, done: {}, scans: [], tab: 'today', store: 'kaufland', basket: {}});
 function load() {
   try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.v === 1) return Object.assign(blank(), s); } catch (e) { /* private mode or blocked storage */ }
   return blank();
@@ -78,6 +78,7 @@ const MAC = {};
 const macros = id => MAC[id] || (MAC[id] = sumIngs(RECIPES[id].ings));
 function amt(f, g) {
   const F = FOODS[f];
+  if (!F) return `${Math.round(g)} ${f === 'juice' ? 'ml' : 'g'}`;
   if (F.piece) { const n = g / F.piece; if (n >= 0.95 && Math.abs(n - Math.round(n)) < 0.05) { const k = Math.round(n); return `${k} ${F.unit}${k > 1 ? 's' : ''}`; } }
   return `${Math.round(g)} g`;
 }
@@ -161,6 +162,62 @@ function storageText(id) {
   return '';
 }
 const promptFor = r => `Realistic food photo for a recipe app: ${r.look}. Home-cooked, a natural portion for one person, on a dark wooden table, warm soft side light, shot from about 45 degrees, shallow depth of field, landscape 4:3. No text, no labels, no logos, no hands, no people.`;
+
+// ---------- shop (shop.js): what to buy on each trip ----------
+// Saturday main shop pays for Sun–Sat of long-life food and Sun–Wed of short-life food (fresh meat, bananas, salad).
+// The Thursday top-up buys the short-life food for Thu–Sat. Leftovers carry over while they are still good.
+const JUICE_DAYS = [1, 2, 4], JUICE_ML = 450;
+const isShort = f => SHOP_INFO[f].life < 7;
+const foodName = f => (FOODS[f] || SHOP_INFO[f]).n;
+const firstDay = () => S.start || planBase();
+function useOn(d) {
+  const out = [], wd = weekday(d), wk = weekIdx(d), first = firstDay();
+  const add = (id, mult) => RECIPES[id].ings.forEach(i => out.push({f: i.f, g: i.g * mult, id}));
+  if (d >= first) {
+    const W = WEEKS[rot(Math.max(wk, 0))];
+    add(W.breakfast, 1); add(W.snack, 1); add('nightquark', 1);
+    if (JUICE_DAYS.includes(wd)) out.push({f: 'juice', g: JUICE_ML, id: 'juice'});
+    if (inBreak(d)) BREAK_EXTRAS.forEach(i => out.push({f: i.f, g: i.g, id: 'extras'}));
+  }
+  if (addDays(d, 1) >= first) {
+    if (wd === 0) { const N = WEEKS[rot(wk + 1)]; add(N.sunDinner, RECIPES[N.sunDinner].makes); add(N.sunLunch, RECIPES[N.sunLunch].makes); }
+    if (wk >= 0 && wd === 2) add(WEEKS[rot(wk)].wedBox, 1);
+    if (wk >= 0 && wd === 4) { const W = WEEKS[rot(wk)]; add(W.thuDinner, RECIPES[W.thuDinner].makes); add(W.thuLunch, RECIPES[W.thuLunch].makes); add(W.friBox, 1); }
+  }
+  return out;
+}
+function trips(n) { const P = planBase(), out = []; for (let w = 0; w < n; w++) { const M = addDays(P, 7 * w); out.push({date: addDays(M, -2), kind: 'main', wk: w}, {date: addDays(M, 3), kind: 'top', wk: w}); } return out; }
+// day i after the trip: does this trip pay for food f used that day?
+const inWindow = (t, f, i) => t.kind === 'main' ? i >= 1 && i <= (isShort(f) ? 4 : 7) : isShort(f) && i <= 2;
+function offerFor(f, store) {
+  const O = OFFERS[f];
+  if (O[store]) return Object.assign({store}, O[store]);
+  const alt = Object.keys(O).filter(s => s !== 'est').map(s => Object.assign({store: s, fallback: true}, O[s])).sort((a, b) => a.price / a.pack_g - b.price / b.pack_g)[0];
+  return alt || Object.assign({store: 'est', fallback: true}, O.est);
+}
+// Simulates every trip from the first one, so leftovers (and what has gone off) are known. Assumes each list was bought.
+function shopPlan(store, upto) {
+  const T = trips(Math.floor(upto / 2) + 1).slice(0, upto + 1), lots = {}, memo = {};
+  const use = d => memo[d] || (memo[d] = useOn(d));
+  const take = (L, e) => { let g = e.g; for (const l of L) { if (l.exp < e.d || l.g <= 0) continue; const x = Math.min(l.g, g); l.g -= x; g -= x; if (g <= 1e-9) break; } return Math.max(0, g); };
+  return T.map(t => {
+    const need = {};
+    for (let i = 0; i <= 7; i++) { const d = addDays(t.date, i); for (const u of use(d)) if (inWindow(t, u.f, i)) { const n = need[u.f] = need[u.f] || {ev: [], ids: new Set()}; n.ev.push({d, g: u.g}); n.ids.add(u.id); } }
+    const items = Object.keys(need).map(f => {
+      const o = offerFor(f, store), L = (lots[f] || []).filter(l => l.g > 0.5 && l.exp >= t.date).sort((a, b) => a.exp < b.exp ? -1 : 1);
+      const ev = need[f].ev, total = ev.reduce((s, e) => s + e.g, 0);
+      const trial = L.map(l => Object.assign({}, l)); let short = 0; ev.forEach(e => { short += take(trial, e); });
+      const packs = short > 0.5 ? Math.max(1, Math.ceil(short / o.pack_g - 0.02)) : 0;
+      L.forEach(l => { l.mine = false; });
+      if (packs) L.push({g: packs * o.pack_g, exp: addDays(t.date, SHOP_INFO[f].life), mine: true});
+      L.sort((a, b) => a.exp < b.exp ? -1 : 1); ev.forEach(e => take(L, e));
+      lots[f] = L;
+      return {f, need: total, fromHome: total - short, packs, o, cost: packs * o.price, eaten: total * o.price / o.pack_g, left: L.filter(l => l.mine).reduce((s, l) => s + l.g, 0), ids: [...need[f].ids]};
+    });
+    return {t, items, cost: items.reduce((s, x) => s + x.cost, 0), eaten: items.reduce((s, x) => s + x.eaten, 0)};
+  });
+}
+function tripNow() { if (!S.start) return 0; const t = todayISO(), T = trips(weekIdx(t) + 3), i = T.findIndex(x => x.date >= t); return i < 0 ? 0 : i; }
 
 // ---------- calorie advice (the 2-week rule from the plan) ----------
 function advice(d) {
@@ -260,7 +317,7 @@ function vToday() {
   return h;
 }
 
-const ui = {week: null, day: null, recipe: null};
+const ui = {week: null, day: null, recipe: null, trip: null};
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const KIND = {breakfast: 'Breakfast', snack: 'Snack', night: 'Night', sunLunch: 'Lunch', thuLunch: 'Lunch', sunDinner: 'Dinner', thuDinner: 'Dinner', wedBox: 'Work box', friBox: 'Work box'};
 const thumb = id => PICS.includes(id) ? `<img src="pics/${esc(id)}.jpg" alt="" loading="lazy">` : '📷';
@@ -322,11 +379,51 @@ function vRecipe(id) {
     <button class="btn sm" data-act="copyPrompt">Copy prompt</button><p class="small muted" style="margin-top:8px">Paste it into Gemini, save the picture to Drive (folder Claude) and tell me: I add it to this page.</p></div>`;
 }
 
+const AISLES = [['veg', 'Fruit and veg'], ['meat', 'Meat, fish and ham (fridge)'], ['dairy', 'Dairy and eggs'], ['bakery', 'Bread and wraps'], ['frozen', 'Freezer'], ['cupboard', 'Cupboard'], ['drinks', 'Drinks']];
+const PLURAL = {'box of 10': 'boxes of 10', 'pack of 6': 'packs of 6', bunch: 'bunches', loaf: 'loaves', '3-pack': '3-packs'};
+const units = (n, u) => `${n} ${n === 1 ? u : PLURAL[u] || u + 's'}`;
+const eur = n => `€${n.toFixed(2)}`;
+const CHAIN = {kaufland: /kaufland/i, aldi: /aldi/i, lidl: /lidl/i, rewe: /rewe|penny|netto/i};
+const BUDGET = [170, 200];
+function forWhat(ids) {
+  const names = ids.map(id => id === 'juice' ? 'gym juice' : id === 'extras' ? 'maintenance extras' : RECIPES[id].name);
+  return names.length > 3 ? `${names.slice(0, 3).join(', ')} and ${names.length - 3} more` : names.join(', ');
+}
+function priceNote(o) {
+  if (o.store === 'est') return '≈ estimate, not checked in a shop yet';
+  if (o.fallback) return `not found at this shop: ${STORES[o.store]} price shown`;
+  return o.ok ? '' : '≈ estimate';
+}
 function vShop() {
+  const store = STORES[S.store] ? S.store : 'kaufland', cur = tripNow(), sel = ui.trip ?? cur;
+  const T = trips(Math.floor(Math.max(sel, cur + 2) / 2) + 1), t = T[sel];
+  const plan = shopPlan(store, 2 * t.wk + 1), trip = plan[sel], basket = S.basket[t.date] || {};
+  const week = plan[2 * t.wk].eaten + plan[2 * t.wk + 1].eaten, month = week * 4.33;
+  const buy = trip.items.filter(x => x.packs > 0), home = trip.items.filter(x => x.packs === 0);
+  const inBasket = buy.filter(x => basket[x.f]), still = buy.filter(x => !basket[x.f]).reduce((s, x) => s + x.cost, 0);
+  const chips = [...new Set([cur, cur + 1, cur + 2, sel])].sort((a, b) => a - b).map(i => { const x = T[i]; return `<button class="chip ${i === sel ? 'on' : ''}" data-act="trip" data-i="${i}">${shortDate(x.date)} · ${x.kind === 'main' ? 'main shop' : 'top-up'}</button>`; }).join('');
+  const row = x => { const on = !!basket[x.f], note = priceNote(x.o);
+    return `<div class="tick ${on ? 'on' : ''}" role="checkbox" tabindex="0" aria-checked="${on}" data-act="basket" data-d="${t.date}" data-k="${esc(x.f)}"><span class="box">${on ? '✓' : ''}</span><span class="grow"><div class="t">${units(x.packs, SHOP_INFO[x.f].unit)} · ${esc(foodName(x.f))}</div><div class="small muted">${esc(x.o.label)}${note ? ` · <i>${esc(note)}</i>` : ''}</div><div class="small muted">For ${esc(forWhat(x.ids))}${x.fromHome > 0.5 ? ` · you still have ~${amt(x.f, x.fromHome)}` : ''}${x.left > x.o.pack_g * 0.05 ? ` · ~${amt(x.f, x.left)} left for later` : ''}</div></span><span class="kc">${eur(x.cost)}</span></div>`; };
+  const groups = AISLES.map(([a, label]) => { const xs = buy.filter(x => SHOP_INFO[x.f].aisle === a); return xs.length ? `<div class="label" style="margin-top:14px">${label}</div>${xs.map(row).join('')}` : ''; }).join('');
+  const sp = SPICE_PRICES[store], spiceRows = SPICE_SHELF.map((s, i) => { const k = 'spice:' + i, on = !!basket[k]; return `<div class="tick ${on ? 'on' : ''}" role="checkbox" tabindex="0" aria-checked="${on}" data-act="basket" data-d="${t.date}" data-k="${k}"><span class="box">${on ? '✓' : ''}</span><span class="grow"><div class="t">${esc(s.n)}</div><div class="small muted">${esc(s.de)}</div></span></div>`; }).join('');
+  const branches = BRANCHES.filter(b => CHAIN[store].test(b.chain || ''));
+  const status = month <= BUDGET[1] ? `<span class="pill ok">${month < BUDGET[0] ? 'under' : 'inside'} your budget</span>` : '<span class="pill warn">over budget</span>';
   return header() + `<h1>Shop</h1>
-  <div class="card hi"><div class="label">Coming in stage 3</div><h2>Weekly list with real prices</h2><p class="small">Kaufland · Aldi Nord · Lidl · Rewe / Netto / Penny, your nearest branches, the weekly cost against your €170–200 budget, and what is left from last week. Main shop on Saturday, small top-up on Thursday.</p></div>
-  <div class="card"><div class="label">Buy once, before the first work day</div>
-  <ul class="plain small"><li><b>Insulated lunch bag + 2 ice packs</b> (~€8–12, Kaufland or Rossmann). There is no fridge at work: without cooling, cooked chicken and rice are not safe after a few hours.</li><li><b>Glass meal-prep boxes</b>: IKEA 365+ 1.0 l, 3-pack, €12.99.</li><li><b>Beetroot direct juice</b> (Rote Bete Direktsaft, 1 l) for the gym days.</li></ul></div>`;
+  <div class="chips" role="group" aria-label="Shop">${Object.entries(STORES).map(([k, n]) => `<button class="chip ${k === store ? 'on' : ''}" data-act="store" data-s="${k}">${esc(n)}</button>`).join('')}</div>
+  <div class="chips" role="group" aria-label="Trip">${chips}</div>
+  ${!S.start && sel === 0 ? `<div class="card hi"><div class="label">Your first shop</div><h2>Everything for week 1</h2><p class="small">This list also stocks the cupboard (oil, rice, sauces) and the spice shelf, which last for weeks, so it costs more than a normal week. Shop on Saturday, batch cook on Sunday, press Start on Monday.</p></div>` : ''}
+  <div class="card"><div class="label">Budget · week ${t.wk + 1}</div><div class="row"><span class="big">≈ ${eur(week)}</span><span class="muted">of food eaten this week</span></div>
+    <div class="bar"><i style="width:${Math.min(100, month / BUDGET[1] * 100)}%"></i></div>
+    <p class="small" style="margin-top:6px">≈ ${eur(month)} a month (budget €${BUDGET[0]}–${BUDGET[1]}) ${status}</p>
+    <p class="small muted">What you pay at the till changes from trip to trip (a bag of rice lasts weeks); this is what the food you actually eat costs.</p></div>
+  <div class="card"><div class="row"><h2 class="grow" style="margin:0">${longDate(t.date)}</h2><span class="counter">≈ ${eur(trip.cost)}</span></div>
+    <p class="small muted" style="margin-top:6px">${t.kind === 'main' ? `Main shop for week ${t.wk + 1}: the Sunday batch, every breakfast, snack and night quark, Tuesday’s work box, and the cupboard and freezer food for Thursday.` : `Top-up for week ${t.wk + 1}: fresh meat and other short-life food for the Thursday batch, Friday’s work box and the weekend.`}</p>
+    ${buy.length ? `<p class="small"><b>In the basket: ${inBasket.length} of ${buy.length}</b>${inBasket.length < buy.length ? ` · ≈ ${eur(still)} still to get` : ' · all done'}</p>${groups}` : '<p>Nothing to buy on this trip: you already have everything.</p>'}
+    ${home.length ? `<details style="margin-top:12px"><summary>Already at home (${home.length})</summary><ul class="plain small">${home.map(x => `<li>${esc(foodName(x.f))}: you have enough (~${amt(x.f, x.need)} needed)</li>`).join('')}</ul></details>` : ''}</div>
+  <div class="card"><details ${sel === 0 ? 'open' : ''}><summary>Spice shelf (buy once${sp && sp.price ? `, ≈ ${eur(Number(sp.price))} each` : ', ≈ €1 each'})</summary><p class="small muted">Small jars that last for months. Tick what you already have.</p>${spiceRows}</details></div>
+  <div class="card"><details ${sel === 0 ? 'open' : ''}><summary>Buy once, before the first work day</summary><ul class="plain small">${ONE_TIME.map(o => `<li><b>${esc(o.n)}</b> · ${esc(o.price)}<br><span class="muted">${esc(o.why)} ${esc(o.where)}.</span></li>`).join('')}</ul></details></div>
+  ${branches.length ? `<div class="card"><div class="label">${esc(STORES[store])} in the city centre</div>${branches.map(b => `<p class="small"><b>${esc(b.address)}</b>${b.hours ? `<br><span class="muted">${esc(b.hours)}</span>` : ''}</p>`).join('')}<p class="small muted">${branches.some(b => /sun/i.test(b.hours || '')) ? 'The branch at the main station also opens on Sundays: handy if something is missing for the Sunday batch. The others are closed on Sundays and public holidays.' : 'Closed on Sundays and public holidays.'}</p></div>` : ''}
+  <p class="small muted">${PRICES_CHECKED ? `Prices seen on the shop websites on ${longDate(PRICES_CHECKED)}.` : 'Prices are estimates until they are checked on the shop websites.'} Shelf prices and weekly offers change, so totals are a guide (≈). The list assumes you bought the earlier lists.</p>`;
 }
 
 function chart() {
@@ -424,6 +521,9 @@ const H = {
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast('Prompt copied. Paste it into the Gemini app.'), fallback);
     else fallback();
   },
+  store(el) { S.store = el.dataset.s; save(); render(); },
+  trip(el) { ui.trip = Number(el.dataset.i); render(); },
+  basket(el) { const d = el.dataset.d, k = el.dataset.k; S.basket[d] = S.basket[d] || {}; if (S.basket[d][k]) delete S.basket[d][k]; else S.basket[d][k] = true; save(); render(); },
   export() {
     const blob = new Blob([JSON.stringify(Object.assign({}, S, {exported: new Date().toISOString()}), null, 1)], {type: 'application/json'});
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `fuel-backup-${todayISO()}.json`; document.body.appendChild(a); a.click(); a.remove();
@@ -469,5 +569,5 @@ window.addEventListener('popstate', () => { ui.recipe = (history.state && histor
 
 render();
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
-window.__fuel = {get S() { return S; }, set S(v) { S = v; }, render, advice, H, save, todayISO, mondayOf, addDays, ui, planFor, dayMeals, kitchen, kitchenOn, macros, weekIdx, fillStep, storageText, ROLE};
+window.__fuel = {get S() { return S; }, set S(v) { S = v; }, render, advice, H, save, todayISO, mondayOf, addDays, ui, planFor, dayMeals, kitchen, kitchenOn, macros, weekIdx, fillStep, storageText, ROLE, useOn, trips, shopPlan, offerFor, tripNow};
 })();
