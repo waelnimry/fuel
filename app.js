@@ -36,7 +36,7 @@ function toast(msg) { const t = $('#toast'); t.textContent = msg; t.style.displa
 
 // ---------- derived ----------
 const dayNo = d => S.start ? daysBetween(S.start, d) + 1 : 0;
-const weekNo = d => S.start ? Math.floor((dayNo(d) - 1) / 7) + 1 : 0;
+const weekNo = d => S.start ? Math.max(1, weekIdx(d) + 1) : 0; // food weeks (Mon–Sun); days before the first Monday count as week 1
 const inBreak = d => PLAN.dietBreaks.some(([a, b]) => d >= a && d <= b);
 const targetKcal = d => inBreak(d) ? PLAN.dietBreakKcal : S.kcal;
 const r0 = n => Math.round(n);
@@ -88,10 +88,11 @@ function fillStep(t, r) {
   return t.replace(/\{=(\w+)\*([\d.]+)\}/g, (m, f, k) => g[f] == null ? m : String(Math.round(g[f] * Number(k) / 5) * 5))
     .replace(/\{(\w+)\}/g, (m, f) => g[f] == null ? m : `(${amt(f, g[f])})`);
 }
-// Monday of food week 1: the week Start was pressed in (a Sunday start belongs to the week after).
+// Monday of food week 1: the first Monday on or after Start. The shop list and the Sunday batch are built for that week,
+// so days between Start and that Monday are lead-in days (week-1 breakfast and snack, own lunch and dinner).
 // Before Start: the coming Monday, because the plan is "shop Saturday, cook Sunday, start Monday".
 function planBase() {
-  if (S.start) return weekday(S.start) === 0 ? addDays(S.start, 1) : mondayOf(S.start);
+  if (S.start) return weekday(S.start) === 1 ? S.start : addDays(mondayOf(S.start), 7);
   const t = todayISO(); return weekday(t) === 1 ? t : addDays(mondayOf(t), 7);
 }
 const weekIdx = d => Math.floor(daysBetween(planBase(), mondayOf(d)) / 7);
@@ -100,13 +101,18 @@ function roleOf(id) {
   for (let w = 0; w < nW; w++) for (const k in WEEKS[w]) if (WEEKS[w][k] === id) return {week: w, role: k};
   return null;
 }
-// The 5 meals of weekday wd in food week wk (wk < 0 only on a start-Sunday: the plan begins with tonight's dinner).
+// Lead-in days (wk < 0) have no batch food yet: lunch and dinner are his own, counted as a rough estimate.
+const OWN = {kcal: 500, p: 45, c: 45, f: 14};
+const own = (slot, label) => Object.assign({slot, label, id: null, own: true, name: `Your own ${label.toLowerCase()}: use up the food from before`}, OWN);
+// The 5 meals of weekday wd in food week wk. wk < 0 = lead-in day before food week 1 (only Sunday dinner comes from the batch).
 function planFor(wk, wd) {
   const W = WEEKS[rot(Math.max(wk, 0))], dinW = wd === 0 ? WEEKS[rot(wk + 1)] : W;
   const out = [{slot: 'breakfast', label: 'Breakfast', id: W.breakfast}];
-  if (wk >= 0) out.push({slot: 'lunch', label: ROLE[LUNCH[wd]].label, id: W[LUNCH[wd]], role: LUNCH[wd]});
-  out.push({slot: 'snack', label: 'Snack', id: W.snack}, {slot: 'dinner', label: 'Dinner', id: dinW[DINNER[wd]], role: DINNER[wd], fresh: wd === 0}, {slot: 'night', label: 'Night', id: 'nightquark'});
-  return out.map(m => Object.assign(m, {name: RECIPES[m.id].name}, macros(m.id)));
+  out.push(wk >= 0 ? {slot: 'lunch', label: ROLE[LUNCH[wd]].label, id: W[LUNCH[wd]], role: LUNCH[wd]} : own('lunch', 'Lunch'));
+  out.push({slot: 'snack', label: 'Snack', id: W.snack});
+  out.push(wk >= 0 || wd === 0 ? {slot: 'dinner', label: 'Dinner', id: dinW[DINNER[wd]], role: DINNER[wd], fresh: wd === 0} : own('dinner', 'Dinner'));
+  out.push({slot: 'night', label: 'Night', id: 'nightquark'});
+  return out.map(m => m.own ? m : Object.assign(m, {name: RECIPES[m.id].name}, macros(m.id)));
 }
 const EXTRAS = sumIngs(BREAK_EXTRAS);
 function dayMeals(d) {
@@ -279,9 +285,9 @@ function foodCard(d) {
   return `<div class="card"><div class="row"><h2 class="grow" style="margin:0">Today’s food</h2><span class="counter">${r0(kcal)} / ${tgt} kcal · ${r0(p)} / ${PLAN.protein} g P</span></div>
     <div class="bar"><i style="width:${pct}%"></i></div>
     ${inBreak(d) ? `<p class="note small">Maintenance week: the normal meals plus the extras below, about ${PLAN.dietBreakKcal} kcal.</p>` : ''}
-    ${weekIdx(d) < 0 ? '<p class="note small">Lunch today is your own: the plan starts with tonight’s dinner from the Sunday batch.</p>' : ''}
+    ${weekIdx(d) < 0 ? `<p class="note small">Food week 1 starts on Monday. Until then: breakfast, snack and night quark from week 1; ${weekday(d) === 0 ? 'lunch is your own and tonight’s dinner is the first portion of the Sunday batch' : 'lunch and dinner are your own'}. Use up the food from before (about 500 kcal and 45 g protein a meal, counted as an estimate).</p>` : ''}
     ${meals.map(m => { const on = !!eaten[m.slot]; return `<div class="meal"><div class="tick ${on ? 'on' : ''}" role="checkbox" tabindex="0" aria-checked="${on}" data-act="eat" data-id="${m.slot}"><span class="box">${on ? '✓' : ''}</span><span class="grow"><span class="label" style="margin:0">${esc(m.label)}</span><div class="t">${esc(m.name)}</div><span class="kc">${r0(m.kcal)} kcal · ${r0(m.p)} g P</span></span></div>${RECIPES[m.id] ? `<button class="btn ghost sm" data-act="recipe" data-id="${m.id}" aria-label="Recipe: ${esc(m.name)}">Recipe</button>` : ''}</div>`; }).join('')}
-    <p class="small muted" style="margin-top:8px">Planned today: ${r0(plan.kcal)} kcal · ${r0(plan.p)} g protein · ${r0(plan.c)} g carbs · ${r0(plan.f)} g fat.</p></div>`;
+    <p class="small muted" style="margin-top:8px">Planned today: ${r0(plan.kcal)} kcal · ${r0(plan.p)} g protein · ${r0(plan.c)} g carbs · ${r0(plan.f)} g fat${meals.some(m => m.own) ? ' (your own meals as estimates)' : ''}.</p></div>`;
 }
 
 function juiceCard(d) {
@@ -309,7 +315,7 @@ function weighCard(d) {
 function vToday() {
   const d = todayISO();
   let h = header() + `<h1>${longDate(d)}</h1>`;
-  if (!S.start) h += `<div class="card hi"><h2>Press Start on the day you begin</h2><p class="small">Nothing is counting yet. When you press Start, that day is <b>day 1</b>: the week count, the food plan and the calorie advice count from it.</p><p class="small muted">Best: shop on Saturday, batch cook week 1 on Sunday, press Start on Monday morning.</p><button class="btn" data-act="start">Press Start — this is day 1</button></div>`;
+  if (!S.start) h += `<div class="card hi"><h2>Press Start on the day you begin</h2><p class="small">Nothing is counting yet. When you press Start, that day is <b>day 1</b>: the week count, the food plan and the calorie advice count from it.</p><p class="small muted">Food week 1 always begins on the next Monday (the batch is cooked the Sunday before). Days before it count, with your own lunch and dinner.</p><button class="btn" data-act="start">Press Start — this is day 1</button></div>`;
   if (inBreak(d)) h += `<div class="card hi"><div class="label">Maintenance week</div><p>Eat about ${PLAN.dietBreakKcal} kcal this week: the normal meals plus the extras in the food list. Training stays the same. It is planned, not a cheat.</p></div>`;
   h += dayCard(d) + juiceCard(d) + weighCard(d) + foodCard(d) + suppCard(d);
   const jobs = kitchenOn(d);
