@@ -87,6 +87,8 @@ const JUICE = {
 
 const SUPPLEMENTS = [
   {id: 'vitd', name: 'Vitamin D3 capsule (5600 IU, weekly)', day: 6, when: 'with dinner', note: 'Mivolis Wochen-Depot from dm. One a week only.'},
+  // day: null = every day
+  {id: 'creatine', name: 'Creatine monohydrate, 5 g', day: null, when: 'any time of day, weighed on your scale', note: 'Stir it into the breakfast quark or a glass of water. Every day, rest days too; no loading phase. The first 2–3 weeks add about 1–2 kg of water in the muscles: that is not fat, and the app waits until week 3 before judging the scale.'},
 ];
 
 const INBODY = {

@@ -300,7 +300,7 @@ function juiceCard(d) {
 }
 
 function suppCard(d) {
-  const items = SUPPLEMENTS.filter(s => s.day === weekday(d));
+  const items = SUPPLEMENTS.filter(s => s.day == null || s.day === weekday(d));
   if (!items.length) return '';
   return `<div class="card"><div class="label">Supplements</div>${items.map(s => { const on = (S.supp[d] || {})[s.id]; return `<div class="tick ${on ? 'on' : ''}" role="checkbox" tabindex="0" aria-checked="${!!on}" data-act="supp" data-id="${s.id}"><span class="box">${on ? '✓' : ''}</span><span class="grow"><div class="t">${esc(s.name)}</div><div class="small muted">${esc(s.when)} · ${esc(s.note)}</div></span></div>`; }).join('')}</div>`;
 }
