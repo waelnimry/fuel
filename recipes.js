@@ -29,7 +29,7 @@ const RECIPES = {
 
   teriyaki: {name: 'Teriyaki chicken rice bowls', kind: 'main', minutes: 35, makes: 3, cuisine: 'Asian', fridge: 1,
     tagline: 'Sticky soy-honey-ginger chicken thighs (juicier and cheaper than breast) with broccoli and carrots.',
-    ings: [{f: 'thigh', g: 170}, {f: 'rice', g: 35, note: 'dry'}, {f: 'broccoli', g: 150, note: 'frozen'}, {f: 'carrot', g: 60}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'ginger', g: 5}, {f: 'garlic', g: 4, note: '1 clove'}, {f: 'cornflour', g: 4}, {f: 'oil', g: 4}, {f: 'sesame', g: 3}],
+    ings: [{f: 'thigh', g: 170}, {f: 'rice', g: 27, note: 'dry'}, {f: 'broccoli', g: 150, note: 'frozen'}, {f: 'carrot', g: 60}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'ginger', g: 5}, {f: 'garlic', g: 4, note: '1 clove'}, {f: 'cornflour', g: 4}, {f: 'oil', g: 4}, {f: 'sesame', g: 3}],
     spices: ['Pepper'],
     steps: [
       'Rice: rinse {rice} in a sieve until the water runs clear. Pot with {=rice*2} ml water and a pinch of salt, high heat until it boils, then low, lid on, 12 min (parboiled rice: the time on the pack, about 15–20 min). Off the heat, lid on, 5 min more.',
@@ -45,7 +45,7 @@ const RECIPES = {
 
   chili: {name: 'Chili con carne with a warm tortilla', kind: 'main', minutes: 45, makes: 4, cuisine: 'International', fridge: 2,
     tagline: 'Smoky beef and bean chili, quark instead of sour cream. Freezes perfectly.',
-    ings: [{f: 'beef5', g: 120}, {f: 'kidney', g: 40, note: 'drained'}, {f: 'choptom', g: 200}, {f: 'onion', g: 50}, {f: 'pepper', g: 80}, {f: 'tompaste', g: 10}, {f: 'garlic', g: 4, note: '1 clove'}, {f: 'oil', g: 4}, {f: 'quark', g: 40, note: 'on top'}, {f: 'wrap', g: 62}],
+    ings: [{f: 'beef5', g: 120}, {f: 'kidney', g: 30, note: 'drained'}, {f: 'choptom', g: 200}, {f: 'onion', g: 50}, {f: 'pepper', g: 80}, {f: 'tompaste', g: 10}, {f: 'garlic', g: 4, note: '1 clove'}, {f: 'oil', g: 2}, {f: 'quark', g: 40, note: 'on top'}, {f: 'wrap', g: 62}],
     spices: ['2 tsp smoked paprika', '1 tsp ground cumin', '1 tsp chili powder (less if you do not like heat)', '1 tsp oregano', 'Salt, pepper'],
     steps: [
       'Dice the onions {onion} and peppers {pepper}. Crush the garlic {garlic}.',
@@ -61,7 +61,7 @@ const RECIPES = {
 
   pollock: {name: 'Lemon-garlic pollock, potatoes and green beans', kind: 'main', minutes: 35, makes: 3, cuisine: 'German', fridge: 2, thaw: ['pollock'],
     tagline: 'Air-fried white fish with a mustard-dill quark dip. Day 2 and 3: the potatoes go crispy in the pan.',
-    ings: [{f: 'pollock', g: 180, note: 'frozen, thawed'}, {f: 'potato', g: 250}, {f: 'beans', g: 150, note: 'frozen'}, {f: 'oil', g: 11}, {f: 'lemon', g: 10}, {f: 'garlic', g: 3}, {f: 'quark', g: 60, note: 'dip'}, {f: 'mustard', g: 8}],
+    ings: [{f: 'pollock', g: 180, note: 'frozen, thawed'}, {f: 'potato', g: 214}, {f: 'beans', g: 150, note: 'frozen'}, {f: 'oil', g: 11}, {f: 'lemon', g: 10}, {f: 'garlic', g: 3}, {f: 'quark', g: 60, note: 'dip'}, {f: 'mustard', g: 8}],
     spices: ['Sweet paprika', 'Dried dill', 'Salt, pepper'],
     steps: [
       'Potatoes {potato}: wash, halve the big ones. Pot of cold salted water, high heat until it boils, then medium, 18–20 min until a knife slides in. Add the frozen green beans {beans} for the last 7 minutes. Drain.',
@@ -76,7 +76,7 @@ const RECIPES = {
 
   salmonpasta: {name: 'Salmon and spinach tomato pasta', kind: 'main', minutes: 25, makes: 2, cuisine: 'Italian', fridge: 2, thaw: ['salmon'],
     tagline: 'Your fatty fish of the week (omega-3). No oil needed: the salmon brings its own.',
-    ings: [{f: 'salmon', g: 125, note: '1 fillet, thawed'}, {f: 'pasta', g: 45, note: 'dry'}, {f: 'spinach', g: 150, note: 'frozen'}, {f: 'passata', g: 150}, {f: 'onion', g: 40}, {f: 'garlic', g: 4}, {f: 'lemon', g: 5}],
+    ings: [{f: 'salmon', g: 125, note: '1 fillet, thawed'}, {f: 'pasta', g: 37, note: 'dry'}, {f: 'spinach', g: 150, note: 'frozen'}, {f: 'passata', g: 150}, {f: 'onion', g: 40}, {f: 'garlic', g: 4}, {f: 'lemon', g: 5}],
     spices: ['Oregano', 'Chili flakes (optional)', 'Salt, pepper'],
     steps: [
       'Pasta {pasta} in salted boiling water for the pack time minus 1 minute. Drain; keep a cup of the water.',
@@ -91,7 +91,7 @@ const RECIPES = {
 
   chickenpastasalad: {name: 'Italian chicken pasta salad', kind: 'work', minutes: 25, makes: 1, cuisine: 'Italian', fridge: 1,
     tagline: 'Made the night before, eaten cold on your break. Nothing in it needs heating.',
-    ings: [{f: 'pasta', g: 50, note: 'dry'}, {f: 'chicken', g: 160}, {f: 'tomato', g: 100}, {f: 'cucumber', g: 80}, {f: 'pepper', g: 60}, {f: 'oil', g: 10, note: '2 tsp'}, {f: 'vinegar', g: 10}],
+    ings: [{f: 'pasta', g: 42, note: 'dry'}, {f: 'chicken', g: 160}, {f: 'tomato', g: 100}, {f: 'cucumber', g: 80}, {f: 'pepper', g: 60}, {f: 'oil', g: 10, note: '2 tsp'}, {f: 'vinegar', g: 10}],
     spices: ['Italian herbs', 'Sweet paprika', 'Salt, pepper'],
     steps: [
       'Pasta {pasta} in salted boiling water for the pack time. Drain, rinse with cold water so it stops cooking, drain well.',
@@ -104,7 +104,7 @@ const RECIPES = {
 
   tunapotato: {name: 'Tuna, egg and potato salad', kind: 'work', minutes: 25, makes: 1, cuisine: 'French', fridge: 1,
     tagline: 'Niçoise-style. The potatoes, beans and egg cook in the same pot as Thursday’s dinner.',
-    ings: [{f: 'potato', g: 220}, {f: 'tuna', g: 112, note: '1 can, drained'}, {f: 'egg', g: 55}, {f: 'beans', g: 100, note: 'frozen'}, {f: 'tomato', g: 100}, {f: 'oil', g: 8}, {f: 'vinegar', g: 10}, {f: 'mustard', g: 5}],
+    ings: [{f: 'potato', g: 184}, {f: 'tuna', g: 112, note: '1 can, drained'}, {f: 'egg', g: 55}, {f: 'beans', g: 100, note: 'frozen'}, {f: 'tomato', g: 100}, {f: 'oil', g: 8}, {f: 'vinegar', g: 10}, {f: 'mustard', g: 5}],
     spices: ['Dried parsley or dill', 'Salt, pepper'],
     steps: [
       'Cook the potatoes {potato} in the same pot as the dinner potatoes. The egg {egg} goes in for the last 10 minutes and the green beans {beans} with the dinner beans for the last 7. Cool the egg in cold water and peel it.',
@@ -132,7 +132,7 @@ const RECIPES = {
 
   beefnoodles: {name: 'Ginger beef noodles', kind: 'main', minutes: 30, makes: 3, cuisine: 'Asian', fridge: 2,
     tagline: 'Savoury minced beef, stir-fry vegetables and egg noodles in a soy-ginger glaze.',
-    ings: [{f: 'beef5', g: 150}, {f: 'eggnoodles', g: 45, note: 'dry'}, {f: 'wokveg', g: 200, note: 'frozen'}, {f: 'soy', g: 15}, {f: 'honey', g: 4}, {f: 'ginger', g: 6}, {f: 'garlic', g: 4}, {f: 'cornflour', g: 3}, {f: 'oil', g: 3}, {f: 'springon', g: 15}],
+    ings: [{f: 'beef5', g: 150}, {f: 'eggnoodles', g: 37, note: 'dry'}, {f: 'wokveg', g: 200, note: 'frozen'}, {f: 'soy', g: 15}, {f: 'honey', g: 4}, {f: 'ginger', g: 6}, {f: 'garlic', g: 4}, {f: 'cornflour', g: 3}, {f: 'oil', g: 3}, {f: 'springon', g: 15}],
     spices: ['Chili flakes (optional)', 'Pepper'],
     steps: [
       'Noodles {eggnoodles}: cook as the pack says (usually 4 min in boiling water). Drain, rinse cold, toss with a few drops of the oil so they do not stick.',
@@ -148,7 +148,7 @@ const RECIPES = {
 
   goulash: {name: 'Paprika pork goulash with pasta', kind: 'main', minutes: 70, makes: 4, cuisine: 'German', fridge: 2,
     tagline: 'Slow-simmered, deep red and tender. Most of the time it cooks on its own.',
-    ings: [{f: 'porkloin', g: 150}, {f: 'onion', g: 100}, {f: 'pepper', g: 100}, {f: 'tompaste', g: 20}, {f: 'stock', g: 3}, {f: 'oil', g: 7}, {f: 'garlic', g: 3}, {f: 'pasta', g: 50, note: 'dry'}, {f: 'quark', g: 40, note: 'on top'}],
+    ings: [{f: 'porkloin', g: 150}, {f: 'onion', g: 100}, {f: 'pepper', g: 100}, {f: 'tompaste', g: 20}, {f: 'stock', g: 3}, {f: 'oil', g: 7}, {f: 'garlic', g: 3}, {f: 'pasta', g: 42, note: 'dry'}, {f: 'quark', g: 40, note: 'on top'}],
     spices: ['3 tbsp sweet paprika', '1 tsp caraway (optional)', '1 tsp marjoram', 'Salt, pepper'],
     steps: [
       'Pork {porkloin} in 2 cm cubes. Onions {onion} diced, peppers {pepper} in strips, garlic {garlic} crushed.',
@@ -164,7 +164,7 @@ const RECIPES = {
 
   chickencurry: {name: 'Chicken and spinach coconut curry with rice', kind: 'main', minutes: 40, makes: 3, cuisine: 'Asian', fridge: 1,
     tagline: 'Mild and creamy with light coconut milk, spinach and peas.',
-    ings: [{f: 'chicken', g: 160}, {f: 'rice', g: 40, note: 'dry'}, {f: 'coconutlt', g: 65}, {f: 'choptom', g: 133}, {f: 'onion', g: 60}, {f: 'spinach', g: 100, note: 'frozen'}, {f: 'peas', g: 50, note: 'frozen'}, {f: 'garlic', g: 4}, {f: 'ginger', g: 5}, {f: 'oil', g: 3}],
+    ings: [{f: 'chicken', g: 160}, {f: 'rice', g: 32, note: 'dry'}, {f: 'coconutlt', g: 65}, {f: 'choptom', g: 133}, {f: 'onion', g: 60}, {f: 'spinach', g: 100, note: 'frozen'}, {f: 'peas', g: 50, note: 'frozen'}, {f: 'garlic', g: 4}, {f: 'ginger', g: 5}, {f: 'oil', g: 3}],
     spices: ['2 tbsp mild curry powder', 'Salt', 'Lemon juice (optional)'],
     steps: [
       'Rice: rinse {rice}. Pot with {=rice*2} ml water and a pinch of salt, boil, then low, lid on, 12 min (parboiled rice: the time on the pack). Off the heat, lid on, 5 min.',
@@ -180,7 +180,7 @@ const RECIPES = {
 
   turkeywedges: {name: 'Paprika turkey strips, wedges and green beans', kind: 'main', minutes: 40, makes: 2, cuisine: 'European', fridge: 2,
     tagline: 'All in the air fryer while the curry cooks on the hob. Garlic quark dip on the side.',
-    ings: [{f: 'turkey', g: 170}, {f: 'potato', g: 220}, {f: 'beans', g: 150, note: 'frozen'}, {f: 'oil', g: 10}, {f: 'quark', g: 50, note: 'dip'}, {f: 'garlic', g: 3}],
+    ings: [{f: 'turkey', g: 170}, {f: 'potato', g: 184}, {f: 'beans', g: 150, note: 'frozen'}, {f: 'oil', g: 10}, {f: 'quark', g: 50, note: 'dip'}, {f: 'garlic', g: 3}],
     spices: ['Smoked paprika', 'Garlic powder', 'Rosemary', 'Salt, pepper'],
     steps: [
       'Potatoes {potato}: wash, cut into wedges (no need to peel), dry with a tea towel. Toss with two thirds of the oil {oil}, paprika, rosemary and salt. Air fryer 200 °C, 18–20 min, shake twice, until golden and soft inside.',
@@ -195,7 +195,7 @@ const RECIPES = {
 
   burritobowl: {name: 'Chicken burrito bowl', kind: 'work', minutes: 30, makes: 1, cuisine: 'International', fridge: 1,
     tagline: 'Spiced chicken, rice and crunchy vegetables with a lime-quark dressing. Eaten cold.',
-    ings: [{f: 'rice', g: 45, note: 'dry'}, {f: 'chicken', g: 160}, {f: 'pepper', g: 80}, {f: 'tomato', g: 80}, {f: 'lettuce', g: 40}, {f: 'quark', g: 50, note: 'dressing'}, {f: 'lemon', g: 10}, {f: 'oil', g: 9}],
+    ings: [{f: 'rice', g: 37, note: 'dry'}, {f: 'chicken', g: 160}, {f: 'pepper', g: 80}, {f: 'tomato', g: 80}, {f: 'lettuce', g: 40}, {f: 'quark', g: 50, note: 'dressing'}, {f: 'lemon', g: 10}, {f: 'oil', g: 9}],
     spices: ['Ground cumin', 'Smoked paprika', 'Chili powder', 'Garlic powder', 'Salt'],
     steps: [
       'Rice: rinse {rice}. Small pot with {=rice*2} ml water, boil, then low, lid on, 12 min (parboiled: the time on the pack), then 5 min off the heat. Spread it on a plate so it cools fast (10 min), then into the box.',
@@ -208,7 +208,7 @@ const RECIPES = {
 
   kartoffelsalat: {name: 'German potato salad with ham and egg', kind: 'work', minutes: 30, makes: 1, cuisine: 'German', fridge: 1,
     tagline: 'Creamy Kartoffelsalat made with quark instead of mayonnaise. Better cold.',
-    ings: [{f: 'potato', g: 250}, {f: 'ham', g: 100}, {f: 'egg', g: 55}, {f: 'cucumber', g: 100}, {f: 'onion', g: 20}, {f: 'quark', g: 70}, {f: 'mustard', g: 8}, {f: 'vinegar', g: 10}, {f: 'oil', g: 5}],
+    ings: [{f: 'potato', g: 214}, {f: 'ham', g: 100}, {f: 'egg', g: 55}, {f: 'cucumber', g: 100}, {f: 'onion', g: 20}, {f: 'quark', g: 70}, {f: 'mustard', g: 8}, {f: 'vinegar', g: 10}, {f: 'oil', g: 5}],
     spices: ['Dried dill', 'Salt, pepper'],
     steps: [
       'Potatoes {potato} in their skins in a pot of cold salted water. Boil, then medium, 18–20 min; the egg {egg} goes in for the last 10. Drain; egg into cold water.',
@@ -235,7 +235,7 @@ const RECIPES = {
 
   linseneintopf: {name: 'Lentil and chicken stew (Linseneintopf)', kind: 'main', minutes: 45, makes: 4, cuisine: 'German', fridge: 2,
     tagline: 'Thick, smoky German lentil stew with potatoes and carrots. One pot, freezes perfectly.',
-    ings: [{f: 'chicken', g: 130}, {f: 'lentils', g: 40}, {f: 'potato', g: 130}, {f: 'carrot', g: 80}, {f: 'onion', g: 50}, {f: 'stock', g: 4}, {f: 'tompaste', g: 10}, {f: 'oil', g: 9}, {f: 'vinegar', g: 8}, {f: 'mustard', g: 5}],
+    ings: [{f: 'chicken', g: 130}, {f: 'lentils', g: 40}, {f: 'potato', g: 94}, {f: 'carrot', g: 80}, {f: 'onion', g: 50}, {f: 'stock', g: 4}, {f: 'tompaste', g: 10}, {f: 'oil', g: 9}, {f: 'vinegar', g: 8}, {f: 'mustard', g: 5}],
     spices: ['2 tsp marjoram', '2 tsp sweet paprika', 'Salt, pepper'],
     steps: [
       'Chicken {chicken} in 2 cm cubes. Onions {onion} diced, carrots {carrot} and peeled potatoes {potato} in 1 cm cubes. Rinse the lentils {lentils} in a sieve.',
@@ -250,7 +250,7 @@ const RECIPES = {
 
   friedrice: {name: 'Egg fried rice with chicken and peas', kind: 'main', minutes: 35, makes: 3, cuisine: 'Asian', fridge: 1,
     tagline: 'Better than the takeaway and three times the protein. Best with rice that has cooled first.',
-    ings: [{f: 'rice', g: 45, note: 'dry'}, {f: 'chicken', g: 140}, {f: 'egg', g: 55}, {f: 'peas', g: 60, note: 'frozen'}, {f: 'carrot', g: 50}, {f: 'springon', g: 15}, {f: 'soy', g: 15}, {f: 'oil', g: 6}, {f: 'garlic', g: 3}],
+    ings: [{f: 'rice', g: 37, note: 'dry'}, {f: 'chicken', g: 140}, {f: 'egg', g: 55}, {f: 'peas', g: 60, note: 'frozen'}, {f: 'carrot', g: 50}, {f: 'springon', g: 15}, {f: 'soy', g: 15}, {f: 'oil', g: 6}, {f: 'garlic', g: 3}],
     spices: ['Pepper', 'Chili flakes (optional)'],
     steps: [
       'Rice first: rinse {rice}, pot with {=rice*2} ml water, boil, then low, lid on, 12 min (parboiled: the time on the pack). Spread it on a big plate to cool for 15 min: warm, wet rice goes mushy.',
@@ -266,7 +266,7 @@ const RECIPES = {
 
   jaegerpfanne: {name: 'Pork and mushroom cream pan (Jägerpfanne) with potatoes', kind: 'main', minutes: 40, makes: 3, cuisine: 'German', fridge: 2,
     tagline: 'Hunter-style pork in a creamy mushroom sauce. The cream is quark, so it is light.',
-    ings: [{f: 'porkloin', g: 150}, {f: 'mushroom', g: 120}, {f: 'onion', g: 50}, {f: 'potato', g: 180}, {f: 'beans', g: 100, note: 'frozen'}, {f: 'milk', g: 60}, {f: 'quark', g: 50}, {f: 'cornflour', g: 4}, {f: 'stock', g: 2}, {f: 'oil', g: 8}],
+    ings: [{f: 'porkloin', g: 150}, {f: 'mushroom', g: 120}, {f: 'onion', g: 50}, {f: 'potato', g: 144}, {f: 'beans', g: 100, note: 'frozen'}, {f: 'milk', g: 60}, {f: 'quark', g: 50}, {f: 'cornflour', g: 4}, {f: 'stock', g: 2}, {f: 'oil', g: 8}],
     spices: ['1 tsp sweet paprika', 'Salt, pepper'],
     steps: [
       'Potatoes {potato}: halved, pot of cold salted water, boil, then medium, 18–20 min. Frozen green beans {beans} in for the last 7 min. Drain.',
@@ -282,7 +282,7 @@ const RECIPES = {
 
   fishchips: {name: 'Air-fryer fish and chips with crushed peas', kind: 'main', minutes: 40, makes: 2, cuisine: 'British', fridge: 2, thaw: ['pollock'],
     tagline: 'Crunchy oat-crusted fish, chips without a fryer, and minty-style lemon peas.',
-    ings: [{f: 'pollock', g: 200, note: 'frozen, thawed'}, {f: 'oats', g: 15}, {f: 'egg', g: 27.5, note: '½ egg'}, {f: 'potato', g: 180}, {f: 'peas', g: 80, note: 'frozen'}, {f: 'oil', g: 7}, {f: 'lemon', g: 10}],
+    ings: [{f: 'pollock', g: 200, note: 'frozen, thawed'}, {f: 'oats', g: 15}, {f: 'egg', g: 27.5, note: '½ egg'}, {f: 'potato', g: 144}, {f: 'peas', g: 80, note: 'frozen'}, {f: 'oil', g: 7}, {f: 'lemon', g: 10}],
     spices: ['Sweet paprika', 'Salt, pepper'],
     steps: [
       'Potatoes {potato} in chips (no need to peel), dry with a tea towel, toss with two thirds of the oil {oil} and salt. Air fryer 200 °C, 18–20 min, shake twice. Keep them warm on a plate.',
@@ -297,7 +297,7 @@ const RECIPES = {
 
   greekpasta: {name: 'Greek pasta salad with chicken and feta', kind: 'work', minutes: 25, makes: 1, cuisine: 'Greek', fridge: 1,
     tagline: 'Cucumber, tomato, red onion, feta and oregano. Even better after a night in the fridge.',
-    ings: [{f: 'pasta', g: 55, note: 'dry'}, {f: 'chicken', g: 140}, {f: 'feta', g: 30}, {f: 'cucumber', g: 80}, {f: 'tomato', g: 80}, {f: 'pepper', g: 50}, {f: 'onion', g: 15}, {f: 'oil', g: 7}, {f: 'lemon', g: 10}],
+    ings: [{f: 'pasta', g: 47, note: 'dry'}, {f: 'chicken', g: 140}, {f: 'feta', g: 30}, {f: 'cucumber', g: 80}, {f: 'tomato', g: 80}, {f: 'pepper', g: 50}, {f: 'onion', g: 15}, {f: 'oil', g: 7}, {f: 'lemon', g: 10}],
     spices: ['1 tsp oregano', 'Salt, pepper'],
     steps: [
       'Pasta {pasta} in salted boiling water for the pack time. Drain, rinse cold, drain well.',
@@ -310,7 +310,7 @@ const RECIPES = {
 
   sesamenoodles: {name: 'Cold sesame chicken noodle salad', kind: 'work', minutes: 25, makes: 1, cuisine: 'Asian', fridge: 1,
     tagline: 'Crunchy cabbage, cucumber and carrot with noodles in a sweet soy-sesame dressing.',
-    ings: [{f: 'eggnoodles', g: 50, note: 'dry'}, {f: 'chicken', g: 140}, {f: 'cucumber', g: 80}, {f: 'carrot', g: 60}, {f: 'cabbage', g: 60}, {f: 'springon', g: 10}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'vinegar', g: 10}, {f: 'sesame', g: 4}, {f: 'oil', g: 6}],
+    ings: [{f: 'eggnoodles', g: 42, note: 'dry'}, {f: 'chicken', g: 140}, {f: 'cucumber', g: 80}, {f: 'carrot', g: 60}, {f: 'cabbage', g: 60}, {f: 'springon', g: 10}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'vinegar', g: 10}, {f: 'sesame', g: 4}, {f: 'oil', g: 6}],
     spices: ['Chili flakes (optional)'],
     steps: [
       'Noodles {eggnoodles} as the pack says, rinse cold, drain well.',
@@ -338,7 +338,7 @@ const RECIPES = {
 
   bolognese: {name: 'Creamy beef and lentil Bolognese', kind: 'main', minutes: 50, makes: 4, cuisine: 'Italian', fridge: 2,
     tagline: 'Half beef, half lentils: same rich ragù, cheaper and more fibre. Quark makes it creamy.',
-    ings: [{f: 'beef5', g: 100}, {f: 'lentils', g: 25}, {f: 'pasta', g: 40, note: 'dry'}, {f: 'passata', g: 150}, {f: 'onion', g: 40}, {f: 'carrot', g: 40}, {f: 'tompaste', g: 10}, {f: 'garlic', g: 4}, {f: 'oil', g: 6}, {f: 'quark', g: 50}],
+    ings: [{f: 'beef5', g: 100}, {f: 'lentils', g: 25}, {f: 'pasta', g: 32, note: 'dry'}, {f: 'passata', g: 150}, {f: 'onion', g: 40}, {f: 'carrot', g: 40}, {f: 'tompaste', g: 10}, {f: 'garlic', g: 4}, {f: 'oil', g: 6}, {f: 'quark', g: 50}],
     spices: ['2 tsp Italian herbs', '1 tsp oregano', 'Salt, pepper'],
     steps: [
       'Onions {onion} and carrots {carrot} diced very small, garlic {garlic} crushed, lentils {lentils} rinsed.',
@@ -353,7 +353,7 @@ const RECIPES = {
 
   sweetsour: {name: 'Sweet-and-sour chicken with peppers and rice', kind: 'main', minutes: 35, makes: 3, cuisine: 'Asian', fridge: 1,
     tagline: 'Glossy, tangy, takeaway-style. The sauce is made from things already in your cupboard.',
-    ings: [{f: 'chicken', g: 160}, {f: 'rice', g: 40, note: 'dry'}, {f: 'pepper', g: 100}, {f: 'onion', g: 50}, {f: 'carrot', g: 40}, {f: 'tompaste', g: 10}, {f: 'vinegar', g: 15}, {f: 'honey', g: 8}, {f: 'soy', g: 10}, {f: 'cornflour', g: 5}, {f: 'oil', g: 8}],
+    ings: [{f: 'chicken', g: 160}, {f: 'rice', g: 32, note: 'dry'}, {f: 'pepper', g: 100}, {f: 'onion', g: 50}, {f: 'carrot', g: 40}, {f: 'tompaste', g: 10}, {f: 'vinegar', g: 15}, {f: 'honey', g: 8}, {f: 'soy', g: 10}, {f: 'cornflour', g: 5}, {f: 'oil', g: 8}],
     spices: ['Garlic powder', 'Pepper'],
     steps: [
       'Rice: rinse {rice}, pot with {=rice*2} ml water, boil, low, lid on, 12 min (parboiled: the time on the pack), then 5 min off the heat.',
@@ -368,7 +368,7 @@ const RECIPES = {
 
   medchicken: {name: 'Lemon-herb chicken thighs with Mediterranean vegetables', kind: 'main', minutes: 40, makes: 3, cuisine: 'Mediterranean', fridge: 2,
     tagline: 'All in the air fryer: juicy thighs, courgette, peppers and crispy potatoes, garlic dip on the side.',
-    ings: [{f: 'thigh', g: 170}, {f: 'potato', g: 200}, {f: 'courgette', g: 100}, {f: 'pepper', g: 80}, {f: 'onion', g: 40}, {f: 'oil', g: 6}, {f: 'garlic', g: 4}, {f: 'lemon', g: 10}, {f: 'quark', g: 40, note: 'dip'}],
+    ings: [{f: 'thigh', g: 170}, {f: 'potato', g: 164}, {f: 'courgette', g: 100}, {f: 'pepper', g: 80}, {f: 'onion', g: 40}, {f: 'oil', g: 6}, {f: 'garlic', g: 4}, {f: 'lemon', g: 10}, {f: 'quark', g: 40, note: 'dip'}],
     spices: ['2 tsp Kräuter der Provence', 'Sweet paprika', 'Salt, pepper'],
     steps: [
       'Potatoes {potato} in small wedges, tossed with half the oil {oil}, salt and herbs. Air fryer 200 °C, 18–20 min, shake twice. Keep warm.',
@@ -383,7 +383,7 @@ const RECIPES = {
 
   salmonnoodles: {name: 'Honey-soy salmon with noodles and stir-fried cabbage', kind: 'main', minutes: 25, makes: 2, cuisine: 'Asian', fridge: 2, thaw: ['salmon'],
     tagline: 'This fortnight’s fatty fish. Sticky glaze, soft noodles, sweet crunchy cabbage.',
-    ings: [{f: 'salmon', g: 150, note: 'thawed'}, {f: 'eggnoodles', g: 35, note: 'dry'}, {f: 'cabbage', g: 120}, {f: 'carrot', g: 50}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'ginger', g: 5}, {f: 'garlic', g: 3}, {f: 'springon', g: 10}],
+    ings: [{f: 'salmon', g: 150, note: 'thawed'}, {f: 'eggnoodles', g: 27, note: 'dry'}, {f: 'cabbage', g: 120}, {f: 'carrot', g: 50}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'ginger', g: 5}, {f: 'garlic', g: 3}, {f: 'springon', g: 10}],
     spices: ['Chili flakes (optional)'],
     steps: [
       'Glaze: soy sauce {soy}, honey {honey}, grated ginger {ginger}, crushed garlic {garlic}.',
@@ -398,7 +398,7 @@ const RECIPES = {
 
   nudelsalat: {name: 'German pasta salad with ham, peas and egg (Nudelsalat)', kind: 'work', minutes: 25, makes: 1, cuisine: 'German', fridge: 1,
     tagline: 'The barbecue classic, made with a quark-mustard dressing instead of mayonnaise.',
-    ings: [{f: 'pasta', g: 55, note: 'dry'}, {f: 'ham', g: 90}, {f: 'egg', g: 55}, {f: 'peas', g: 60, note: 'frozen'}, {f: 'cucumber', g: 60}, {f: 'quark', g: 70}, {f: 'mustard', g: 8}, {f: 'vinegar', g: 8}, {f: 'oil', g: 4}],
+    ings: [{f: 'pasta', g: 47, note: 'dry'}, {f: 'ham', g: 90}, {f: 'egg', g: 55}, {f: 'peas', g: 60, note: 'frozen'}, {f: 'cucumber', g: 60}, {f: 'quark', g: 70}, {f: 'mustard', g: 8}, {f: 'vinegar', g: 8}, {f: 'oil', g: 4}],
     spices: ['Dried dill', 'Salt, pepper'],
     steps: [
       'Pasta {pasta} in salted boiling water; the egg {egg} in the same pot for 10 min and the frozen peas {peas} for the last 2. Drain, rinse cold. Peel the egg.',
@@ -410,7 +410,7 @@ const RECIPES = {
 
   peanutrice: {name: 'Chicken and rice salad with peanut dressing', kind: 'work', minutes: 30, makes: 1, cuisine: 'Asian', fridge: 1,
     tagline: 'Satay flavours, eaten cold: crunchy veg and a nutty, salty-sweet dressing.',
-    ings: [{f: 'rice', g: 45, note: 'dry'}, {f: 'chicken', g: 150}, {f: 'cucumber', g: 80}, {f: 'carrot', g: 60}, {f: 'cabbage', g: 60}, {f: 'springon', g: 10}, {f: 'pbutter', g: 15}, {f: 'soy', g: 12}, {f: 'lemon', g: 10}, {f: 'honey', g: 4}],
+    ings: [{f: 'rice', g: 37, note: 'dry'}, {f: 'chicken', g: 150}, {f: 'cucumber', g: 80}, {f: 'carrot', g: 60}, {f: 'cabbage', g: 60}, {f: 'springon', g: 10}, {f: 'pbutter', g: 15}, {f: 'soy', g: 12}, {f: 'lemon', g: 10}, {f: 'honey', g: 4}],
     spices: ['Chili flakes (optional)'],
     steps: [
       'Rice: rinse {rice}, small pot with {=rice*2} ml water, 12 min low (parboiled: the pack time). Spread on a plate to cool fast.',
@@ -438,7 +438,7 @@ const RECIPES = {
 
   frikassee: {name: 'Chicken fricassee with rice (Hühnerfrikassee)', kind: 'main', minutes: 40, makes: 4, cuisine: 'German', fridge: 1,
     tagline: 'Grandma-style creamy chicken with mushrooms, peas and carrots. Light, because the cream is milk and quark.',
-    ings: [{f: 'chicken', g: 150}, {f: 'rice', g: 40, note: 'dry'}, {f: 'mushroom', g: 80}, {f: 'peas', g: 50, note: 'frozen'}, {f: 'carrot', g: 50}, {f: 'milk', g: 80}, {f: 'cornflour', g: 6}, {f: 'stock', g: 3}, {f: 'oil', g: 7}, {f: 'lemon', g: 5}, {f: 'quark', g: 30}],
+    ings: [{f: 'chicken', g: 150}, {f: 'rice', g: 32, note: 'dry'}, {f: 'mushroom', g: 80}, {f: 'peas', g: 50, note: 'frozen'}, {f: 'carrot', g: 50}, {f: 'milk', g: 80}, {f: 'cornflour', g: 6}, {f: 'stock', g: 3}, {f: 'oil', g: 7}, {f: 'lemon', g: 5}, {f: 'quark', g: 30}],
     spices: ['A pinch of nutmeg', 'Salt, pepper'],
     steps: [
       'Rice: rinse {rice}, pot with {=rice*2} ml water, boil, low, lid on, 12 min (parboiled: the pack time), 5 min off the heat.',
@@ -453,7 +453,7 @@ const RECIPES = {
 
   porknoodles: {name: 'Ginger pork and broccoli noodles', kind: 'main', minutes: 30, makes: 3, cuisine: 'Asian', fridge: 2,
     tagline: 'Fast stir-fry with tender pork strips and lots of broccoli.',
-    ings: [{f: 'porkloin', g: 150}, {f: 'eggnoodles', g: 45, note: 'dry'}, {f: 'broccoli', g: 150, note: 'frozen'}, {f: 'carrot', g: 50}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'ginger', g: 5}, {f: 'garlic', g: 4}, {f: 'cornflour', g: 3}, {f: 'oil', g: 8}],
+    ings: [{f: 'porkloin', g: 150}, {f: 'eggnoodles', g: 37, note: 'dry'}, {f: 'broccoli', g: 150, note: 'frozen'}, {f: 'carrot', g: 50}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'ginger', g: 5}, {f: 'garlic', g: 4}, {f: 'cornflour', g: 3}, {f: 'oil', g: 8}],
     spices: ['Chili flakes (optional)'],
     steps: [
       'Noodles {eggnoodles} as the pack says, rinse cold, a few drops of the oil {oil} so they do not stick.',
@@ -468,7 +468,7 @@ const RECIPES = {
 
   pollockpasta: {name: 'Pollock in creamy tomato-spinach sauce with pasta', kind: 'main', minutes: 30, makes: 3, cuisine: 'Italian', fridge: 2, thaw: ['pollock'],
     tagline: 'Gentle white fish in a rosé sauce. A cheap way to get your fish in.',
-    ings: [{f: 'pollock', g: 180, note: 'frozen, thawed'}, {f: 'pasta', g: 50, note: 'dry'}, {f: 'choptom', g: 150}, {f: 'spinach', g: 100, note: 'frozen'}, {f: 'onion', g: 40}, {f: 'garlic', g: 4}, {f: 'quark', g: 50}, {f: 'oil', g: 8}, {f: 'parmesan', g: 5}],
+    ings: [{f: 'pollock', g: 180, note: 'frozen, thawed'}, {f: 'pasta', g: 42, note: 'dry'}, {f: 'choptom', g: 150}, {f: 'spinach', g: 100, note: 'frozen'}, {f: 'onion', g: 40}, {f: 'garlic', g: 4}, {f: 'quark', g: 50}, {f: 'oil', g: 8}, {f: 'parmesan', g: 5}],
     spices: ['1 tsp oregano', 'Chili flakes (optional)', 'Salt, pepper'],
     steps: [
       'Pasta {pasta} in salted boiling water, pack time minus 1 min. Drain.',
@@ -483,7 +483,7 @@ const RECIPES = {
 
   schnitzel: {name: 'Oat-crusted chicken schnitzel with warm potato salad', kind: 'main', minutes: 40, makes: 2, cuisine: 'German', fridge: 2,
     tagline: 'Crunchy schnitzel from the air fryer, with a Swabian-style vinegar potato salad.',
-    ings: [{f: 'chicken', g: 160}, {f: 'oats', g: 15}, {f: 'egg', g: 27.5, note: '½ egg'}, {f: 'potato', g: 200}, {f: 'cucumber', g: 80}, {f: 'onion', g: 20}, {f: 'vinegar', g: 10}, {f: 'mustard', g: 5}, {f: 'oil', g: 7}, {f: 'stock', g: 2}],
+    ings: [{f: 'chicken', g: 160}, {f: 'oats', g: 15}, {f: 'egg', g: 27.5, note: '½ egg'}, {f: 'potato', g: 164}, {f: 'cucumber', g: 80}, {f: 'onion', g: 20}, {f: 'vinegar', g: 10}, {f: 'mustard', g: 5}, {f: 'oil', g: 7}, {f: 'stock', g: 2}],
     spices: ['Sweet paprika', 'Salt, pepper'],
     steps: [
       'Potatoes {potato} in their skins, salted water, 18–20 min. Peel while warm, slice.',
@@ -498,7 +498,7 @@ const RECIPES = {
 
   tunabean: {name: 'Italian tuna and white bean salad with toast', kind: 'work', minutes: 10, makes: 1, cuisine: 'Italian', fridge: 1,
     tagline: 'Insalata di tonno e fagioli: no cooking at all.',
-    ings: [{f: 'tuna', g: 112, note: '1 can, drained'}, {f: 'whitebeans', g: 100, note: 'drained'}, {f: 'tomato', g: 100}, {f: 'onion', g: 20}, {f: 'cucumber', g: 60}, {f: 'oil', g: 10}, {f: 'lemon', g: 10}, {f: 'toast', g: 56}],
+    ings: [{f: 'tuna', g: 112, note: '1 can, drained'}, {f: 'whitebeans', g: 100, note: 'drained'}, {f: 'tomato', g: 100}, {f: 'onion', g: 20}, {f: 'cucumber', g: 60}, {f: 'oil', g: 10}, {f: 'lemon', g: 10}, {f: 'toast', g: 42}],
     spices: ['Oregano', 'Salt, pepper'],
     steps: [
       'In the box: oil {oil}, lemon {lemon}, oregano, salt, pepper.',
@@ -510,7 +510,7 @@ const RECIPES = {
 
   caesar: {name: 'Chicken Caesar salad box', kind: 'work', minutes: 25, makes: 1, cuisine: 'International', fridge: 1,
     tagline: 'Crunchy croutons from the air fryer and a light Caesar dressing made with quark.',
-    ings: [{f: 'chicken', g: 150}, {f: 'lettuce', g: 100}, {f: 'toast', g: 28}, {f: 'parmesan', g: 12}, {f: 'quark', g: 60}, {f: 'mustard', g: 5}, {f: 'lemon', g: 10}, {f: 'oil', g: 6}, {f: 'garlic', g: 2}, {f: 'tomato', g: 80}, {f: 'egg', g: 55}],
+    ings: [{f: 'chicken', g: 150}, {f: 'lettuce', g: 100}, {f: 'toast', g: 28}, {f: 'parmesan', g: 12}, {f: 'quark', g: 60}, {f: 'mustard', g: 5}, {f: 'lemon', g: 10}, {f: 'oil', g: 3}, {f: 'garlic', g: 2}, {f: 'tomato', g: 80}, {f: 'egg', g: 55}],
     spices: ['Salt, pepper'],
     steps: [
       'Chicken {chicken} with salt and pepper: air fryer 190 °C, 14–16 min, white all through. Egg {egg} boiled 10 min meanwhile. Cool both.',
@@ -539,7 +539,7 @@ const RECIPES = {
 
   tuscanstew: {name: 'Tuscan chicken and white bean stew', kind: 'main', minutes: 40, makes: 4, cuisine: 'Italian', fridge: 2,
     tagline: 'Tomato, garlic, rosemary and spinach with potatoes cooked right in the pot.',
-    ings: [{f: 'chicken', g: 140}, {f: 'whitebeans', g: 60, note: 'drained'}, {f: 'potato', g: 150}, {f: 'choptom', g: 100}, {f: 'spinach', g: 100, note: 'frozen'}, {f: 'onion', g: 50}, {f: 'garlic', g: 4}, {f: 'stock', g: 3}, {f: 'oil', g: 8}, {f: 'parmesan', g: 6}],
+    ings: [{f: 'chicken', g: 140}, {f: 'whitebeans', g: 60, note: 'drained'}, {f: 'potato', g: 114}, {f: 'choptom', g: 100}, {f: 'spinach', g: 100, note: 'frozen'}, {f: 'onion', g: 50}, {f: 'garlic', g: 4}, {f: 'stock', g: 3}, {f: 'oil', g: 8}, {f: 'parmesan', g: 6}],
     spices: ['1 tsp rosemary', '1 tsp Italian herbs', 'Chili flakes (optional)', 'Salt, pepper'],
     steps: [
       'Chicken {chicken} in 2 cm cubes, potatoes {potato} in 1.5 cm cubes, onion {onion} diced, garlic {garlic} crushed. Beans {whitebeans} drained and rinsed.',
@@ -554,7 +554,7 @@ const RECIPES = {
 
   gingerpork: {name: 'Japanese-style ginger pork with rice and cabbage', kind: 'main', minutes: 30, makes: 3, cuisine: 'Asian', fridge: 1,
     tagline: 'Shogayaki: thin pork in a sweet-salty ginger glaze over soft cabbage.',
-    ings: [{f: 'porkloin', g: 170}, {f: 'rice', g: 45, note: 'dry'}, {f: 'cabbage', g: 150}, {f: 'onion', g: 50}, {f: 'ginger', g: 8}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'oil', g: 8}],
+    ings: [{f: 'porkloin', g: 170}, {f: 'rice', g: 37, note: 'dry'}, {f: 'cabbage', g: 150}, {f: 'onion', g: 50}, {f: 'ginger', g: 8}, {f: 'soy', g: 15}, {f: 'honey', g: 5}, {f: 'oil', g: 8}],
     spices: ['Pepper'],
     steps: [
       'Rice: rinse {rice}, pot with {=rice*2} ml water, boil, low, lid on, 12 min (parboiled: the pack time), 5 min off the heat.',
@@ -569,7 +569,7 @@ const RECIPES = {
 
   fishcurry: {name: 'Thai-style coconut fish curry with rice', kind: 'main', minutes: 35, makes: 3, cuisine: 'Asian', fridge: 1, thaw: ['pollock'],
     tagline: 'Mild yellow curry with white fish, spinach and peas. Uses the half can of coconut milk from week 2.',
-    ings: [{f: 'pollock', g: 200, note: 'frozen, thawed'}, {f: 'rice', g: 45, note: 'dry'}, {f: 'coconutlt', g: 65}, {f: 'choptom', g: 100}, {f: 'spinach', g: 80, note: 'frozen'}, {f: 'peas', g: 40, note: 'frozen'}, {f: 'onion', g: 40}, {f: 'garlic', g: 3}, {f: 'ginger', g: 5}, {f: 'oil', g: 6}],
+    ings: [{f: 'pollock', g: 200, note: 'frozen, thawed'}, {f: 'rice', g: 37, note: 'dry'}, {f: 'coconutlt', g: 65}, {f: 'choptom', g: 100}, {f: 'spinach', g: 80, note: 'frozen'}, {f: 'peas', g: 40, note: 'frozen'}, {f: 'onion', g: 40}, {f: 'garlic', g: 3}, {f: 'ginger', g: 5}, {f: 'oil', g: 6}],
     spices: ['2 tbsp mild curry powder', 'Salt'],
     steps: [
       'Rice: rinse {rice}, pot with {=rice*2} ml water, boil, low, lid on, 12 min (parboiled: the pack time), 5 min off the heat.',
@@ -584,7 +584,7 @@ const RECIPES = {
 
   tortilla: {name: 'Spanish potato omelette (tortilla) with ham and salad', kind: 'main', minutes: 35, makes: 2, cuisine: 'Spanish', fridge: 2,
     tagline: 'Thick, golden and just as good cold. Six eggs make two big portions.',
-    ings: [{f: 'egg', g: 165, note: '3 eggs'}, {f: 'potato', g: 130}, {f: 'onion', g: 50}, {f: 'ham', g: 60}, {f: 'oil', g: 4}, {f: 'lettuce', g: 60}, {f: 'tomato', g: 80}, {f: 'quark', g: 50, note: 'dip'}],
+    ings: [{f: 'egg', g: 165, note: '3 eggs'}, {f: 'potato', g: 94}, {f: 'onion', g: 50}, {f: 'ham', g: 60}, {f: 'oil', g: 4}, {f: 'lettuce', g: 60}, {f: 'tomato', g: 80}, {f: 'quark', g: 50, note: 'dip'}],
     spices: ['Smoked paprika', 'Salt, pepper'],
     steps: [
       'Potatoes {potato} peeled, in thin slices; onion {onion} in thin slices. Non-stick pan, medium heat, oil {oil}, lid on: 15 min, turning now and then, until soft (not crisp).',
@@ -599,7 +599,7 @@ const RECIPES = {
 
   bento: {name: 'Teriyaki-style chicken bento box', kind: 'work', minutes: 30, makes: 1, cuisine: 'Asian', fridge: 1,
     tagline: 'Rice, chicken, a boiled egg and vegetables in neat sections. Eaten cold.',
-    ings: [{f: 'rice', g: 45, note: 'dry'}, {f: 'chicken', g: 150}, {f: 'egg', g: 55}, {f: 'broccoli', g: 100, note: 'frozen'}, {f: 'carrot', g: 50}, {f: 'soy', g: 10}, {f: 'sesame', g: 3}, {f: 'oil', g: 3}],
+    ings: [{f: 'rice', g: 37, note: 'dry'}, {f: 'chicken', g: 150}, {f: 'egg', g: 55}, {f: 'broccoli', g: 100, note: 'frozen'}, {f: 'carrot', g: 50}, {f: 'soy', g: 10}, {f: 'sesame', g: 3}, {f: 'oil', g: 3}],
     spices: ['Garlic powder'],
     steps: [
       'Rice: rinse {rice}, small pot with {=rice*2} ml water, 12 min low (parboiled: pack time). The egg {egg} boils 10 min in another pot; frozen broccoli {broccoli} and carrot {carrot} sticks join it for the last 4.',
@@ -611,7 +611,7 @@ const RECIPES = {
 
   lentilsalad: {name: 'Lentil salad with chicken, feta and mustard dressing', kind: 'work', minutes: 25, makes: 1, cuisine: 'European', fridge: 1,
     tagline: 'Hearty, cheap and packed with fibre. Cook the lentils briefly so they keep their shape.',
-    ings: [{f: 'lentils', g: 60, note: 'dry'}, {f: 'chicken', g: 90}, {f: 'feta', g: 40}, {f: 'cucumber', g: 80}, {f: 'tomato', g: 80}, {f: 'onion', g: 20}, {f: 'oil', g: 8}, {f: 'lemon', g: 10}, {f: 'mustard', g: 5}],
+    ings: [{f: 'lentils', g: 52, note: 'dry'}, {f: 'chicken', g: 90}, {f: 'feta', g: 40}, {f: 'cucumber', g: 80}, {f: 'tomato', g: 80}, {f: 'onion', g: 20}, {f: 'oil', g: 8}, {f: 'lemon', g: 10}, {f: 'mustard', g: 5}],
     spices: ['Dried dill', 'Salt, pepper'],
     steps: [
       'Lentils {lentils} rinsed, boiling salted water 6–7 min only (they turn to mush after 10). Drain, rinse cold.',
@@ -638,7 +638,7 @@ const RECIPES = {
 
   cacciatore: {name: 'Chicken cacciatore with pasta', kind: 'main', minutes: 45, makes: 4, cuisine: 'Italian', fridge: 2,
     tagline: 'Hunter-style Italian chicken stewed with tomatoes, peppers, mushrooms and rosemary.',
-    ings: [{f: 'chicken', g: 150}, {f: 'pasta', g: 50, note: 'dry'}, {f: 'choptom', g: 100}, {f: 'pepper', g: 80}, {f: 'mushroom', g: 80}, {f: 'onion', g: 40}, {f: 'garlic', g: 4}, {f: 'tompaste', g: 10}, {f: 'oil', g: 9}, {f: 'parmesan', g: 5}],
+    ings: [{f: 'chicken', g: 150}, {f: 'pasta', g: 42, note: 'dry'}, {f: 'choptom', g: 100}, {f: 'pepper', g: 80}, {f: 'mushroom', g: 80}, {f: 'onion', g: 40}, {f: 'garlic', g: 4}, {f: 'tompaste', g: 10}, {f: 'oil', g: 9}, {f: 'parmesan', g: 5}],
     spices: ['1 tsp rosemary', '1 tsp oregano', 'Salt, pepper'],
     steps: [
       'Chicken {chicken} in big chunks. Peppers {pepper} in strips, mushrooms {mushroom} halved, onion {onion} sliced, garlic {garlic} crushed.',
@@ -653,7 +653,7 @@ const RECIPES = {
 
   krapow: {name: 'Thai-style chili-garlic chicken with green beans and rice', kind: 'main', minutes: 30, makes: 3, cuisine: 'Asian', fridge: 1,
     tagline: 'Inspired by Thai street food: lots of garlic, a little heat, salty-sweet.',
-    ings: [{f: 'chicken', g: 160}, {f: 'rice', g: 45, note: 'dry'}, {f: 'beans', g: 120, note: 'frozen'}, {f: 'onion', g: 40}, {f: 'garlic', g: 6}, {f: 'soy', g: 15}, {f: 'honey', g: 4}, {f: 'oil', g: 10}],
+    ings: [{f: 'chicken', g: 160}, {f: 'rice', g: 37, note: 'dry'}, {f: 'beans', g: 120, note: 'frozen'}, {f: 'onion', g: 40}, {f: 'garlic', g: 6}, {f: 'soy', g: 15}, {f: 'honey', g: 4}, {f: 'oil', g: 10}],
     spices: ['1 tsp chili flakes (less if you do not like heat)', 'Pepper'],
     steps: [
       'Rice: rinse {rice}, pot with {=rice*2} ml water, boil, low, lid on, 12 min (parboiled: pack time), 5 min off the heat.',
@@ -668,7 +668,7 @@ const RECIPES = {
 
   krautpfanne: {name: 'Pork, cabbage and potato pan (Krautpfanne)', kind: 'main', minutes: 40, makes: 3, cuisine: 'German', fridge: 2,
     tagline: 'Hearty German one-pan with caraway and a mustard-quark topping.',
-    ings: [{f: 'porkloin', g: 150}, {f: 'cabbage', g: 200}, {f: 'potato', g: 180}, {f: 'onion', g: 50}, {f: 'stock', g: 3}, {f: 'oil', g: 10}, {f: 'quark', g: 40}, {f: 'mustard', g: 5}],
+    ings: [{f: 'porkloin', g: 150}, {f: 'cabbage', g: 200}, {f: 'potato', g: 144}, {f: 'onion', g: 50}, {f: 'stock', g: 3}, {f: 'oil', g: 10}, {f: 'quark', g: 40}, {f: 'mustard', g: 5}],
     spices: ['1 tsp caraway', '1 tsp sweet paprika', 'Salt, pepper'],
     steps: [
       'Potatoes {potato} in 1.5 cm cubes, boiled 8 min in salted water, drained. Cabbage {cabbage} in strips, onion {onion} sliced, pork {porkloin} in strips.',
@@ -683,7 +683,7 @@ const RECIPES = {
 
   salmonpotatoes: {name: 'Salmon with dill potatoes, peas and lemon quark', kind: 'main', minutes: 30, makes: 2, cuisine: 'European', fridge: 2, thaw: ['salmon'],
     tagline: 'This fortnight’s fatty fish, simple and fresh.',
-    ings: [{f: 'salmon', g: 150, note: 'thawed'}, {f: 'potato', g: 180}, {f: 'peas', g: 60, note: 'frozen'}, {f: 'quark', g: 50}, {f: 'lemon', g: 5}],
+    ings: [{f: 'salmon', g: 150, note: 'thawed'}, {f: 'potato', g: 144}, {f: 'peas', g: 60, note: 'frozen'}, {f: 'quark', g: 50}, {f: 'lemon', g: 5}],
     spices: ['Dried dill', 'Salt, pepper'],
     steps: [
       'Potatoes {potato} halved, salted water, 18–20 min; frozen peas {peas} in for the last 3. Drain, dill over the potatoes.',
@@ -697,7 +697,7 @@ const RECIPES = {
 
   chickenwrap: {name: 'Chicken and veggie wraps with garlic dip', kind: 'work', minutes: 25, makes: 1, cuisine: 'International', fridge: 1,
     tagline: 'Rolled at work, so nothing goes soggy: wrap, filling and dip packed separately.',
-    ings: [{f: 'wrap', g: 62}, {f: 'chicken', g: 140}, {f: 'mozzlt', g: 30}, {f: 'lettuce', g: 40}, {f: 'pepper', g: 50}, {f: 'cucumber', g: 50}, {f: 'carrot', g: 50}, {f: 'quark', g: 50}, {f: 'garlic', g: 2}, {f: 'lemon', g: 5}, {f: 'oil', g: 4}],
+    ings: [{f: 'wrap', g: 62}, {f: 'chicken', g: 140}, {f: 'mozzlt', g: 20}, {f: 'lettuce', g: 40}, {f: 'pepper', g: 50}, {f: 'cucumber', g: 50}, {f: 'carrot', g: 50}, {f: 'quark', g: 50}, {f: 'garlic', g: 2}, {f: 'lemon', g: 5}, {f: 'oil', g: 3}],
     spices: ['Smoked paprika', 'Salt, pepper'],
     steps: [
       'Chicken {chicken} rubbed with oil {oil}, smoked paprika and salt: air fryer 190 °C, 14–16 min, white all through. Cool, slice.',
@@ -709,7 +709,7 @@ const RECIPES = {
 
   chickenpotsalad: {name: 'Chicken, potato and green bean salad', kind: 'work', minutes: 30, makes: 1, cuisine: 'European', fridge: 1,
     tagline: 'Warm-weather comfort, eaten cold: mustard vinaigrette and a boiled egg.',
-    ings: [{f: 'chicken', g: 140}, {f: 'potato', g: 180}, {f: 'beans', g: 100, note: 'frozen'}, {f: 'egg', g: 55}, {f: 'onion', g: 20}, {f: 'mustard', g: 8}, {f: 'vinegar', g: 10}, {f: 'oil', g: 9}, {f: 'cucumber', g: 60}],
+    ings: [{f: 'chicken', g: 140}, {f: 'potato', g: 144}, {f: 'beans', g: 100, note: 'frozen'}, {f: 'egg', g: 55}, {f: 'onion', g: 20}, {f: 'mustard', g: 8}, {f: 'vinegar', g: 10}, {f: 'oil', g: 9}, {f: 'cucumber', g: 60}],
     spices: ['Dried dill', 'Salt, pepper'],
     steps: [
       'Potatoes {potato} halved, salted water, 18–20 min; the egg {egg} in for the last 10 and frozen beans {beans} for the last 7. Drain, egg into cold water.',
@@ -736,7 +736,7 @@ const RECIPES = {
 
   chilipollo: {name: 'Chicken and bean chili with rice', kind: 'main', minutes: 40, makes: 4, cuisine: 'International', fridge: 1,
     tagline: 'Smoky chili with chicken instead of beef: cheaper and leaner, just as good.',
-    ings: [{f: 'chicken', g: 140}, {f: 'rice', g: 40, note: 'dry'}, {f: 'kidney', g: 60, note: 'drained'}, {f: 'choptom', g: 150}, {f: 'pepper', g: 80}, {f: 'onion', g: 50}, {f: 'garlic', g: 4}, {f: 'tompaste', g: 10}, {f: 'oil', g: 7}, {f: 'quark', g: 30, note: 'on top'}],
+    ings: [{f: 'chicken', g: 140}, {f: 'rice', g: 32, note: 'dry'}, {f: 'kidney', g: 60, note: 'drained'}, {f: 'choptom', g: 150}, {f: 'pepper', g: 80}, {f: 'onion', g: 50}, {f: 'garlic', g: 4}, {f: 'tompaste', g: 10}, {f: 'oil', g: 7}, {f: 'quark', g: 30, note: 'on top'}],
     spices: ['2 tsp smoked paprika', '1 tsp ground cumin', '1 tsp chili powder', 'Salt, pepper'],
     steps: [
       'Rice: rinse {rice}, pot with {=rice*2} ml water, boil, low, lid on, 12 min (parboiled: pack time), 5 min off the heat.',
@@ -751,7 +751,7 @@ const RECIPES = {
 
   chowmein: {name: 'Chicken chow mein', kind: 'main', minutes: 30, makes: 3, cuisine: 'Asian', fridge: 2,
     tagline: 'The takeaway favourite: soft noodles, crunchy cabbage, savoury sauce.',
-    ings: [{f: 'chicken', g: 150}, {f: 'eggnoodles', g: 45, note: 'dry'}, {f: 'wokveg', g: 150, note: 'frozen'}, {f: 'cabbage', g: 80}, {f: 'soy', g: 15}, {f: 'honey', g: 4}, {f: 'garlic', g: 3}, {f: 'ginger', g: 5}, {f: 'oil', g: 8}, {f: 'springon', g: 10}],
+    ings: [{f: 'chicken', g: 150}, {f: 'eggnoodles', g: 37, note: 'dry'}, {f: 'wokveg', g: 150, note: 'frozen'}, {f: 'cabbage', g: 80}, {f: 'soy', g: 15}, {f: 'honey', g: 4}, {f: 'garlic', g: 3}, {f: 'ginger', g: 5}, {f: 'oil', g: 8}, {f: 'springon', g: 10}],
     spices: ['Pepper'],
     steps: [
       'Noodles {eggnoodles} as the pack says, rinse cold, a few drops of the oil {oil}.',
@@ -766,7 +766,7 @@ const RECIPES = {
 
   stroganoff: {name: 'Pork stroganoff with pasta', kind: 'main', minutes: 30, makes: 3, cuisine: 'European', fridge: 2,
     tagline: 'Paprika, mushrooms and a creamy mustard sauce, all in one pan.',
-    ings: [{f: 'porkloin', g: 150}, {f: 'pasta', g: 50, note: 'dry'}, {f: 'mushroom', g: 100}, {f: 'onion', g: 50}, {f: 'quark', g: 60}, {f: 'mustard', g: 5}, {f: 'tompaste', g: 5}, {f: 'stock', g: 2}, {f: 'oil', g: 8}],
+    ings: [{f: 'porkloin', g: 150}, {f: 'pasta', g: 42, note: 'dry'}, {f: 'mushroom', g: 100}, {f: 'onion', g: 50}, {f: 'quark', g: 60}, {f: 'mustard', g: 5}, {f: 'tompaste', g: 5}, {f: 'stock', g: 2}, {f: 'oil', g: 8}],
     spices: ['2 tsp sweet paprika', 'Salt, pepper'],
     steps: [
       'Pasta {pasta} in salted boiling water for the pack time. Drain.',
@@ -781,7 +781,7 @@ const RECIPES = {
 
   carbonara: {name: 'Light carbonara with ham and peas', kind: 'main', minutes: 20, makes: 2, cuisine: 'Italian', fridge: 2,
     tagline: 'Creamy without cream: eggs, quark and parmesan make the sauce.',
-    ings: [{f: 'pasta', g: 60, note: 'dry'}, {f: 'egg', g: 55}, {f: 'ham', g: 80}, {f: 'quark', g: 50}, {f: 'parmesan', g: 10}, {f: 'peas', g: 60, note: 'frozen'}, {f: 'garlic', g: 3}],
+    ings: [{f: 'pasta', g: 52, note: 'dry'}, {f: 'egg', g: 55}, {f: 'ham', g: 80}, {f: 'quark', g: 50}, {f: 'parmesan', g: 10}, {f: 'peas', g: 60, note: 'frozen'}, {f: 'garlic', g: 3}],
     spices: ['Lots of black pepper', 'Salt'],
     steps: [
       'Pasta {pasta} in salted boiling water; frozen peas {peas} in for the last 3 min. Keep a cup of the water, drain.',
@@ -796,7 +796,7 @@ const RECIPES = {
 
   asianslaw: {name: 'Asian chicken slaw with peanut dressing', kind: 'work', minutes: 25, makes: 1, cuisine: 'Asian', fridge: 1,
     tagline: 'Crunchy cabbage and carrot with noodles and chicken: satay-style, eaten cold.',
-    ings: [{f: 'chicken', g: 150}, {f: 'cabbage', g: 150}, {f: 'carrot', g: 80}, {f: 'springon', g: 15}, {f: 'eggnoodles', g: 30, note: 'dry'}, {f: 'pbutter', g: 15}, {f: 'soy', g: 12}, {f: 'lemon', g: 15}, {f: 'honey', g: 5}, {f: 'sesame', g: 3}],
+    ings: [{f: 'chicken', g: 150}, {f: 'cabbage', g: 150}, {f: 'carrot', g: 80}, {f: 'springon', g: 15}, {f: 'eggnoodles', g: 22, note: 'dry'}, {f: 'pbutter', g: 15}, {f: 'soy', g: 12}, {f: 'lemon', g: 15}, {f: 'honey', g: 5}, {f: 'sesame', g: 3}],
     spices: ['Chili flakes (optional)'],
     steps: [
       'Noodles {eggnoodles} as the pack says, rinse cold.',
@@ -809,7 +809,7 @@ const RECIPES = {
 
   eggsalad: {name: 'Egg salad with ham, toast and veg sticks', kind: 'work', minutes: 20, makes: 1, cuisine: 'European', fridge: 1,
     tagline: 'Creamy egg salad with quark instead of mayonnaise. Spread it on the toast at work.',
-    ings: [{f: 'egg', g: 165, note: '3 eggs'}, {f: 'quark', g: 80}, {f: 'mustard', g: 8}, {f: 'springon', g: 10}, {f: 'ham', g: 40}, {f: 'toast', g: 56}, {f: 'cucumber', g: 80}, {f: 'carrot', g: 80}],
+    ings: [{f: 'egg', g: 165, note: '3 eggs'}, {f: 'quark', g: 80}, {f: 'mustard', g: 8}, {f: 'springon', g: 10}, {f: 'ham', g: 40}, {f: 'toast', g: 42}, {f: 'cucumber', g: 80}, {f: 'carrot', g: 80}],
     spices: ['Salt, pepper', 'Sweet paprika'],
     steps: [
       'Eggs {egg} boiled 10 min, into cold water, peeled, chopped.',

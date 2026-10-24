@@ -87,9 +87,15 @@ const JUICE = {
 
 const SUPPLEMENTS = [
   {id: 'vitd', name: 'Vitamin D3 capsule (5600 IU, weekly)', day: 6, when: 'with dinner', note: 'Mivolis Wochen-Depot from dm. One a week only.'},
-  // day: null = every day
+  // day: null = every day. food + g: counted in the day's calories when ticked.
+  {id: 'chia', name: 'Chia water: 12 g chia seeds (1 tbsp) in a big glass of water', day: null, food: 'chia', g: 12, when: 'before your hungriest meal', note: 'Stir, wait at least 10 minutes (15 is better), stir again, then drink it slowly. Never eat chia dry. No more than 15 g a day (the EU limit on the pack).'},
   {id: 'creatine', name: 'Creatine monohydrate, 5 g', day: null, when: 'any time of day, weighed on your scale', note: 'Stir it into the breakfast quark or a glass of water. Every day, rest days too; no loading phase. The first 2–3 weeks add about 1–2 kg of water in the muscles: that is not fat, and the app waits until week 3 before judging the scale.'},
 ];
+
+// Used every day on top of the recipes; the shop list buys them. g = grams, or ml for drinks.
+const DAILY_USE = [{f: 'chia', g: 12}, {f: 'colazero', g: 3000 / 7}];
+
+const DRINKS = 'Drinks: water, tea, black coffee, and zero-sugar cola (up to about 0.5 l a day, with meals, none after 16:00 because of the caffeine).';
 
 const INBODY = {
   place: 'Firstsports, Halberstädter Str. 17, Magdeburg',

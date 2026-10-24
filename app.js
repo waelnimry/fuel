@@ -78,7 +78,7 @@ const MAC = {};
 const macros = id => MAC[id] || (MAC[id] = sumIngs(RECIPES[id].ings));
 function amt(f, g) {
   const F = FOODS[f];
-  if (!F) return `${Math.round(g)} ${f === 'juice' ? 'ml' : 'g'}`;
+  if (!F) return `${Math.round(g)} ${f === 'juice' || f === 'colazero' ? 'ml' : 'g'}`;
   if (F.piece) { const n = g / F.piece; if (n >= 0.95 && Math.abs(n - Math.round(n)) < 0.05) { const k = Math.round(n); return `${k} ${F.unit}${k > 1 ? 's' : ''}`; } }
   return `${Math.round(g)} g`;
 }
@@ -184,6 +184,7 @@ function useOn(d) {
     add(W.breakfast, 1); add(W.snack, 1); add('nightquark', 1);
     if (JUICE_DAYS.includes(wd)) out.push({f: 'juice', g: JUICE_ML, id: 'juice'});
     if (inBreak(d)) BREAK_EXTRAS.forEach(i => out.push({f: i.f, g: i.g, id: 'extras'}));
+    DAILY_USE.forEach(u => out.push({f: u.f, g: u.g, id: u.f}));
   }
   if (addDays(d, 1) >= first) {
     if (wd === 0) { const N = WEEKS[rot(wk + 1)]; add(N.sunDinner, RECIPES[N.sunDinner].makes); add(N.sunLunch, RECIPES[N.sunLunch].makes); }
@@ -277,17 +278,18 @@ function dayCard(d) {
 
 function foodCard(d) {
   if (!S.start) return `<div class="card"><div class="label">Food</div><h2>Your food plan starts on day 1</h2><p class="small">Week 1 is ready in the Eat tab, every recipe with exact grams. Best order: shop on Saturday, batch cook on Sunday, press Start on Monday morning.</p><button class="btn sm" data-act="goEat">Open week 1</button></div>`;
-  const meals = dayMeals(d), eaten = S.eaten[d] || {}, tgt = targetKcal(d), plan = total(meals);
+  const meals = dayMeals(d), eaten = S.eaten[d] || {}, tgt = targetKcal(d), plan = total(meals.concat(SUPPLEMENTS.filter(s => s.food && (s.day == null || s.day === weekday(d))).map(s => sumIngs([{f: s.food, g: s.g}]))));
   let kcal = 0, p = 0;
   meals.forEach(m => { if (eaten[m.slot]) { kcal += m.kcal; p += m.p; } });
   if (S.juice[d]) kcal += JUICE.kcal;
+  SUPPLEMENTS.filter(s => s.food && (S.supp[d] || {})[s.id]).forEach(s => { kcal += FOODS[s.food].k * s.g / 100; p += FOODS[s.food].p * s.g / 100; });
   const pct = Math.min(100, kcal / tgt * 100);
   return `<div class="card"><div class="row"><h2 class="grow" style="margin:0">Today’s food</h2><span class="counter">${r0(kcal)} / ${tgt} kcal · ${r0(p)} / ${PLAN.protein} g P</span></div>
     <div class="bar"><i style="width:${pct}%"></i></div>
     ${inBreak(d) ? `<p class="note small">Maintenance week: the normal meals plus the extras below, about ${PLAN.dietBreakKcal} kcal.</p>` : ''}
     ${weekIdx(d) < 0 ? `<p class="note small">Food week 1 starts on Monday. Until then: breakfast, snack and night quark from week 1; ${weekday(d) === 0 ? 'lunch is your own and tonight’s dinner is the first portion of the Sunday batch' : 'lunch and dinner are your own'}. Use up the food from before (about 500 kcal and 45 g protein a meal, counted as an estimate).</p>` : ''}
     ${meals.map(m => { const on = !!eaten[m.slot]; return `<div class="meal"><div class="tick ${on ? 'on' : ''}" role="checkbox" tabindex="0" aria-checked="${on}" data-act="eat" data-id="${m.slot}"><span class="box">${on ? '✓' : ''}</span><span class="grow"><span class="label" style="margin:0">${esc(m.label)}</span><div class="t">${esc(m.name)}</div><span class="kc">${r0(m.kcal)} kcal · ${r0(m.p)} g P</span></span></div>${RECIPES[m.id] ? `<button class="btn ghost sm" data-act="recipe" data-id="${m.id}" aria-label="Recipe: ${esc(m.name)}">Recipe</button>` : ''}</div>`; }).join('')}
-    <p class="small muted" style="margin-top:8px">Planned today: ${r0(plan.kcal)} kcal · ${r0(plan.p)} g protein · ${r0(plan.c)} g carbs · ${r0(plan.f)} g fat${meals.some(m => m.own) ? ' (your own meals as estimates)' : ''}.</p></div>`;
+    <p class="small muted" style="margin-top:8px">Planned today: ${r0(plan.kcal)} kcal · ${r0(plan.p)} g protein · ${r0(plan.c)} g carbs · ${r0(plan.f)} g fat${meals.some(m => m.own) ? ' (your own meals as estimates)' : ''}, chia water included.</p><p class="small muted">${esc(DRINKS)}</p></div>`;
 }
 
 function juiceCard(d) {
@@ -302,7 +304,7 @@ function juiceCard(d) {
 function suppCard(d) {
   const items = SUPPLEMENTS.filter(s => s.day == null || s.day === weekday(d));
   if (!items.length) return '';
-  return `<div class="card"><div class="label">Supplements</div>${items.map(s => { const on = (S.supp[d] || {})[s.id]; return `<div class="tick ${on ? 'on' : ''}" role="checkbox" tabindex="0" aria-checked="${!!on}" data-act="supp" data-id="${s.id}"><span class="box">${on ? '✓' : ''}</span><span class="grow"><div class="t">${esc(s.name)}</div><div class="small muted">${esc(s.when)} · ${esc(s.note)}</div></span></div>`; }).join('')}</div>`;
+  return `<div class="card"><div class="label">Supplements</div>${items.map(s => { const on = (S.supp[d] || {})[s.id]; return `<div class="tick ${on ? 'on' : ''}" role="checkbox" tabindex="0" aria-checked="${!!on}" data-act="supp" data-id="${s.id}"><span class="box">${on ? '✓' : ''}</span><span class="grow"><div class="t">${esc(s.name)}${s.food ? ` <span class="kc">+${r0(FOODS[s.food].k * s.g / 100)} kcal</span>` : ''}</div><div class="small muted">${esc(s.when)} · ${esc(s.note)}</div></span></div>`; }).join('')}</div>`;
 }
 
 function weighCard(d) {
@@ -360,7 +362,7 @@ function vEat() {
     <li>Chicken, pork and mince are done when a cut-open piece has no pink and the juice runs clear.</li></ul></div>
   <div class="card"><h2>The targets</h2><p><b>${PLAN.kcal} kcal · ${PLAN.protein} g protein a day</b>: about ${r0((1 - PLAN.kcal / PLAN.maintenance) * 100)} % below your estimated maintenance of ~${PLAN.maintenance} kcal. Expect about 0.75 kg a week.</p>
   <p class="small muted">Maintenance week: ${PLAN.dietBreaks.map(([a, b]) => shortDate(a) + ' – ' + shortDate(b)).join(', ')} (~${PLAN.dietBreakKcal} kcal). Goal: ${esc(PLAN.goal)}.</p></div>
-  <div class="card"><div class="label">Rules that always apply</div><ul class="plain small"><li>Protein first at every meal.</li><li>No juice, soda or sugary drinks (the pre-gym beetroot juice is the planned exception).</li><li>Kitchen closes after the night quark.</li><li>Still hungry? Vegetables and water, never more rice.</li><li>Hob: high = 8 of 9, medium = 5–6, low = 2–3.</li></ul></div>`;
+  <div class="card"><div class="label">Rules that always apply</div><ul class="plain small"><li>Protein first at every meal.</li><li>No juice or sugary drinks (the pre-gym beetroot juice is the planned exception). Zero-sugar cola is fine: up to about 0.5 l a day, with meals, none after 16:00.</li><li>Chia water every day before your hungriest meal (12 g, soaked at least 10 minutes).</li><li>Kitchen closes after the night quark.</li><li>Still hungry? Vegetables and water, never more rice.</li><li>Hob: high = 8 of 9, medium = 5–6, low = 2–3.</li></ul></div>`;
 }
 
 function vRecipe(id) {
@@ -392,7 +394,7 @@ const eur = n => `€${n.toFixed(2)}`;
 const CHAIN = {kaufland: /kaufland/i, aldi: /aldi/i, lidl: /lidl/i, rewe: /rewe|penny|netto/i};
 const BUDGET = [170, 200];
 function forWhat(ids) {
-  const names = ids.map(id => id === 'juice' ? 'gym juice' : id === 'extras' ? 'maintenance extras' : RECIPES[id].name);
+  const names = ids.map(id => ({juice: 'gym juice', extras: 'maintenance extras', chia: 'daily chia water', colazero: 'zero cola, 2 bottles a week'})[id] || RECIPES[id].name);
   return names.length > 3 ? `${names.slice(0, 3).join(', ')} and ${names.length - 3} more` : names.join(', ');
 }
 function priceNote(o) {
