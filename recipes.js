@@ -842,4 +842,4 @@ const PLAN_WEEKS = 8;
 const BREAK_EXTRAS = [{f: 'toast', g: 56, note: '2 slices'}, {f: 'pbutter', g: 20}, {f: 'banana', g: 120, note: '1 banana'}, {f: 'oats', g: 50, note: 'extra in breakfast'}];
 
 // Pictures he has made in the Gemini app and that are saved in pics/<id>.jpg.
-const PICS = ['appleoats', 'beefnoodles', 'berrybowl', 'burritobowl', 'chickencurry', 'chickenpastasalad', 'chili', 'cocoaquark', 'goulash', 'herbdip', 'kartoffelsalat', 'nightquark', 'pollock', 'salmonpasta', 'teriyaki', 'tunapotato', 'turkeywedges'];
+const PICS = ['applecrumble', 'appleoats', 'appleporridge', 'beefnoodles', 'berrybowl', 'bolognese', 'burritobowl', 'chickencurry', 'chickenpastasalad', 'chili', 'cocoaquark', 'eggstoast', 'fishchips', 'friedrice', 'goulash', 'greekpasta', 'herbdip', 'jaegerpfanne', 'kartoffelsalat', 'linseneintopf', 'medchicken', 'nightquark', 'nudelsalat', 'peanutrice', 'pollock', 'quarkbrot', 'salmonnoodles', 'salmonpasta', 'sesamenoodles', 'sweetsour', 'teriyaki', 'tunapotato', 'turkeywedges'];
